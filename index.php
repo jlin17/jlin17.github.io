@@ -1,4 +1,3 @@
-
 <html>
 <head>
   <title>Image ASCII Mapper</title>
