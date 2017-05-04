@@ -13,10 +13,8 @@
     window.onkeypress = function(event) {
       if(event.keyCode == 100 || event.keyCode == 68) {
         if(video.paused) {
-          alert("Playing video.");
           video.play();
         } else {
-          alert("Pausing video.");
           video.pause();
         }
       }
