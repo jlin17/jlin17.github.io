@@ -2,9 +2,18 @@
   <head>
     <title>Psych Demo</title>
   </head>
-  
+  <script>
+    var video = document.getElementById("video");
+    
+    window.onkeypress = function(event) {
+      if(event.keyCode == 100 || event.keyCode == 68) {
+        alert("Playing video.");
+        video.play();
+      }
+    };
+  </script>
   <body>
-    <video width="300" height="200" autoplay="autoplay">
+    <video width="300" height="200" id="video">
       <source src="clip.mov" type="video/mp4" />
     </video>
   </body>
