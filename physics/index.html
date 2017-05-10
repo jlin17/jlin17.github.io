@@ -68,9 +68,10 @@
 
     document.onkeypress = function(e) {
       if(e.code == "Enter") {
-        appendCode(input.value);
+        var inputVal = input.value;
+        appendCode(inputVal);
         setTimeout(function() {
-          executeCode(input.value);
+          executeCode(inputVal);
         }, 1);
         input.value = "";
       }
