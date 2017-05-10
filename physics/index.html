@@ -2,8 +2,6 @@
   <head>
     <title>OOP with CARS</title>
   </head>
-  <script>
-  </script>
   <style>
     body {
       background-color: black;
@@ -64,4 +62,20 @@
       <input type="text" id="input" />
     </div>
   </body>
+  <script>
+    var input = document.getElementById("input");
+    var output = document.getElementById("output");
+
+    document.onkeypress = function(e) {
+      if(e.code == "Enter") {
+        appendCode(input.value);
+        input.value = "";
+      }
+    }
+
+    function appendCode(str) {
+      output.appendChild(document.createTextNode(str));
+      output.appendChild(document.createElement("br"));
+    }
+  </script>
 </html>
