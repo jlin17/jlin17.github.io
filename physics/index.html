@@ -1,31 +1,67 @@
 <html>
-<head>
-  <title>OOP</title>
-</head>
+  <head>
+    <title>OOP with CARS</title>
+  </head>
+  <script>
+  </script>
   <style>
     body {
       background-color: black;
+      padding: 0px;
+      margin: 0px;
     }
-    
+
     div#code {
-      background-color: white;
-      height: 30%;
+      background-color: #F5F5F5;
       position: absolute;
+      bottom: 0px;
+      width: 100vw;
+      height: 30%;
+      padding: 0px;
+    }
+
+    div#output {
+      font-family: "Consolas", "Courier New", monospace;
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 10pt;
+      padding: 10px;
+      overflow-y: auto;
+      height: 80%;
+      width: 98.9vw;
+    }
+
+    input#input {
+      color: #555;
+      width: 100vw;
+      position: absolute;
+      bottom: 0px;
+      margin: 0px;
+      font-family: "Consolas", "Courier New", monospace;
+      border: none;
+      border-top: 1px solid #039BE5;
+      padding: 10px;
+      padding-left: 25px;
+      outline: none;
+    }
+
+    span.input-marker {
+      color: #64b5f6;
+      font-family: Arial;
+      padding: 8px;
+      font-weight: bold;
+      position: absolute;
+      z-index: 2;
+      left: 0;
       bottom: 0;
     }
-    
-    input#input {
-      border: 1px solid #eee;
-      padding: 5px;
-      font-size: 10pt;
-      font-family: "Consolas", "Courier New", serif;
-      position: absolute;
-      width: 100%;
-    }
   </style>
-<body>
-  <div id="code">
-    <input type="text" id="input" />
-  </div>
-</body>
+  <body onload="document.getElementById('input').focus()">
+    <div id="code">
+      <div id="output"></div>
+      <span class="input-marker">&gt;</span>
+      <input type="text" id="input" />
+    </div>
+  </body>
 </html>
