@@ -7,7 +7,7 @@ Simulation = {
     return new Date().getTime() - this.startTime;
   },
   tick: function() {
-    if(this.elapsed() >= 1000) this.time++;
+    if(Simulation.elapsed() >= 1000) this.time++;
   },
   setCanvas: function(context) {
     this.context = context;
@@ -15,7 +15,7 @@ Simulation = {
   start: function() {
     this.startTime = new Date().getTime();
     this.task = setInterval(function() {
-      this.tick();
+      Simulation.tick();
     }, 10);
   },
   stop: function() {
