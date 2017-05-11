@@ -3,14 +3,23 @@ Simulation = {
   startTime: 0,
   task: -1,
   time: 0,
+  elapsed: function() {
+    return new Date().getTime() - this.startTime;
+  },
   tick: function() {
+    if(this.elapsed() >= 1000) this.time++;
   },
   setCanvas: function(context) {
     this.context = context;
   },
   start: function() {
+    this.startTime = new Date().getTime();
+    this.task = setInterval(function() {
+      this.tick();
+    }, 10);
   },
   stop: function() {
+    window.clearInterval(this.task);
   }
 }
 
@@ -25,6 +34,8 @@ Ball = {
   dX: 0,
   dY: 0,
   motion: function() {
+    this.x += this.dX;
+    this.y += this.dY;
   },
   randomPos: function() {
     this.x = getRandomInt(0, 590);
