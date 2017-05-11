@@ -50,10 +50,14 @@ var Ball = function(x, y) {
   this.y = y;
   this.dX = 0;
   this.dY = 0;
+  this.aX = 0;
+  this.aY = 0;
 }
 
 Ball.prototype = {
   motion: function() {
+    this.dX += this.aX;
+    this.dY += this.aY;
     this.x += this.dX;
     this.y += this.dY;
   },
