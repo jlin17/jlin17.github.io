@@ -4,11 +4,20 @@ Simulation = {
   startTime: 0,
   task: -1,
   time: 0,
+  seconds: 0,
   elapsed: function() {
     return new Date().getTime() - this.startTime;
   },
   tick: function() {
     this.time = (new Date().getTime() - this.startTime) / 1000;
+    if(this.time - this.seconds >= 1000) {
+      this.seconds++;
+      if(this.scene.balls.length > 0) {
+        for(var i = 0; i < this.scene.balls.length; i++) {
+          this.scene.balls[i].motion();
+        }
+      }
+    }
   },
   setCanvas: function(context) {
     this.context = context;
