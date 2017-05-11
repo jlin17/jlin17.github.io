@@ -7,6 +7,7 @@
       background-color: black;
       padding: 0px;
       margin: 0px;
+      overflow-x: hidden;
     }
 
     div#code {
@@ -17,7 +18,7 @@
       height: 30%;
       padding: 0px;
     }
-    
+
     div#error {
       color: white;
       background-color: #D32F2F;
@@ -34,7 +35,7 @@
       display: none;
       transform: translateX(-50%);
     }
-    
+
     div#output {
       font-family: "Consolas", "Courier New", monospace;
       position: absolute;
@@ -59,6 +60,7 @@
       padding: 10px;
       padding-left: 25px;
       outline: none;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
     }
 
     span.input-marker {
@@ -100,7 +102,7 @@
       output.appendChild(document.createTextNode(str));
       output.appendChild(document.createElement("br"));
     }
-    
+
     function executeCode(str) {
       try {
         eval(str);
@@ -108,7 +110,7 @@
         showError(e.toString());
       }
     }
-    
+
     function showError(str) {
       error.textContent = str;
       error.style.display = "inline-block";
