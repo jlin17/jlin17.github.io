@@ -1,5 +1,17 @@
 Simulation = {
-
+  context: {},
+  startTime: 0,
+  task: -1,
+  time: 0,
+  tick: function() {
+  },
+  setCanvas: function(context) {
+    this.context = context;
+  },
+  start: function() {
+  },
+  stop: function() {
+  }
 }
 
 Scene = {
