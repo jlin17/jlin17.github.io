@@ -7,7 +7,7 @@ Simulation = {
     return new Date().getTime() - this.startTime;
   },
   tick: function() {
-    if(Simulation.elapsed() >= 1000) this.time++;
+    this.time = (new Date().getTime() - this.startTime) / 1000;
   },
   setCanvas: function(context) {
     this.context = context;
