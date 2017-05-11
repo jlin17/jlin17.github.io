@@ -86,10 +86,18 @@
     var error = document.getElementById("error");
     var input = document.getElementById("input");
     var output = document.getElementById("output");
+    var lastEntry;
+
+    document.onkeydown = function(e) {
+      if(e.code == "ArrowUp") {
+        if(lastEntry != null) input.value = lastEntry;
+      }
+    }
 
     document.onkeypress = function(e) {
       if(e.code == "Enter") {
         var inputVal = input.value;
+        lastEntry = inputVal;
         appendCode(inputVal);
         setTimeout(function() {
           executeCode(inputVal);
