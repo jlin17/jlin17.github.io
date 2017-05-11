@@ -15,6 +15,10 @@ Ball = {
   randomPos: function() {
     this.x = getRandomInt(0, 590);
     this.y = getRandomInt(0, 270);
+  },
+  setPos: function(x, y) {
+    this.x = x;
+    this.y = y;
   }
 }
   
