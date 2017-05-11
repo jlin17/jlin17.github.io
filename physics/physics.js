@@ -8,15 +8,20 @@ Simulation = {
   elapsed: function() {
     return new Date().getTime() - this.startTime;
   },
+  secondsElapsed: function() {
+    return this.time - this.seconds;
+  },
   tick: function() {
-    this.time = (new Date().getTime() - this.startTime) / 1000;
-    if(this.time - this.seconds >= 1000) {
+    this.time = Simulation.elapsed() / 1000;
+    var elapsed = Simulation.secondsElapsed();
+    if(elapsed >= 1) {
       console.log("Another second gone by...");
       this.seconds++;
-      if(this.scene.balls.length > 0) {
-        for(var i = 0; i < this.scene.balls.length; i++) {
-          this.scene.balls[i].motion();
-        }
+    }
+
+    if(Scene.balls.length > 0) {
+      for(var i = 0; i < Scene.balls.length; i++) {
+        Scene.balls[i].motion(elapsed);
       }
     }
   },
@@ -55,11 +60,11 @@ Ball = function(x, y) {
 }
 
 Ball.prototype = {
-  motion: function() {
-    this.dX += this.aX;
-    this.dY += this.aY;
-    this.x += this.dX;
-    this.y += this.dY;
+  motion: function(factor) {
+    this.dX += (this.aX * factor);
+    this.dY += (this.aY * factor);
+    this.x += (this.dX * factor);
+    this.y += (this.dY * factor);
   },
   randomPos: function() {
     this.x = getRandomInt(0, 590);
@@ -71,12 +76,18 @@ Ball.prototype = {
   }
 }
 
-Ramp.prototype = {
-  x: 0,
-  y: 0,
-  rotation: 0
+Ramp = function(x, y) {
+  this.x = x;
+  this.y = y;
+  this.rotation = 0;
 }
-  
+
+Ramp.prototype = {
+  setRotation: function(rotation) {
+    this.rotation = rotation;
+  }
+}
+
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
