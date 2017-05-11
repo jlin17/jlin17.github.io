@@ -1,5 +1,6 @@
 Simulation = {
   context: {},
+  scene: {},
   startTime: 0,
   task: -1,
   time: 0,
