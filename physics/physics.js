@@ -26,7 +26,13 @@ Simulation = {
 
 Scene = {
   balls: [],
-  ramps: []
+  ramps: [],
+  addBall: function(ball) {
+    this.balls.push(ball);
+  },
+  addRamp: function(ramp) {
+    this.ramps.push(ramp);
+  }
 }
 
 Ball = {
