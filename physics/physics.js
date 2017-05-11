@@ -21,6 +21,12 @@ Ball = {
     this.y = y;
   }
 }
+
+Ramp = {
+  x: 0,
+  y: 0,
+  rotation: 0
+}
   
 function getRandomInt(min, max) {
   min = Math.ceil(min);
