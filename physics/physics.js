@@ -45,7 +45,7 @@ Scene = {
   }
 }
 
-var Ball = function(x, y) {
+Ball = function(x, y) {
   this.x = x;
   this.y = y;
   this.dX = 0;
