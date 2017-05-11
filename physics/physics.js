@@ -11,6 +11,7 @@ Simulation = {
   tick: function() {
     this.time = (new Date().getTime() - this.startTime) / 1000;
     if(this.time - this.seconds >= 1000) {
+      console.log("Another second gone by...");
       this.seconds++;
       if(this.scene.balls.length > 0) {
         for(var i = 0; i < this.scene.balls.length; i++) {
