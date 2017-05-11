@@ -44,7 +44,7 @@
       font-size: 10pt;
       padding: 10px;
       overflow-y: auto;
-      height: 55%;
+      height: 57%;
       width: 98.9vw;
     }
 
@@ -73,7 +73,7 @@
       left: 0;
       bottom: 0;
     }
-    
+
     div#square-container {
       position: absolute;
       left: 0;
@@ -81,10 +81,10 @@
       height: 70%;
       width: 100vw;
     }
-    
+
     canvas#square {
       position: absolute;
-      background-color: #888;
+      background-color: #222;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
@@ -103,13 +103,17 @@
       <input type="text" id="input" />
     </div>
   </body>
+  <script src="jquery-3.2.1.min.js"></script>
   <script src="physics.js"></script>
   <script>
     var canvas = document.getElementById("square");
     var error = document.getElementById("error");
     var input = document.getElementById("input");
     var output = document.getElementById("output");
+    var $output = $(output);
     var lastEntry;
+
+    Simulation.setCanvas(canvas.getContext("2d"));
 
     document.onkeydown = function(e) {
       if(e.code == "ArrowUp") {
@@ -132,6 +136,7 @@
     function appendCode(str) {
       output.appendChild(document.createTextNode(str));
       output.appendChild(document.createElement("br"));
+      $output.scrollTop(output.scrollHeight);
     }
 
     function executeCode(str) {
