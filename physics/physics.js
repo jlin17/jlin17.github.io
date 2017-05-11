@@ -45,11 +45,14 @@ Scene = {
   }
 }
 
-Ball = {
-  x: 0,
-  y: 0,
-  dX: 0,
-  dY: 0,
+var Ball = function(x, y) {
+  this.x = x;
+  this.y = y;
+  this.dX = 0;
+  this.dY = 0;
+}
+
+Ball.prototype = {
   motion: function() {
     this.x += this.dX;
     this.y += this.dY;
@@ -64,7 +67,7 @@ Ball = {
   }
 }
 
-Ramp = {
+Ramp.prototype = {
   x: 0,
   y: 0,
   rotation: 0
