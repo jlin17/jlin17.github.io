@@ -24,6 +24,8 @@ Ball = {
   y: 0,
   dX: 0,
   dY: 0,
+  motion: function() {
+  },
   randomPos: function() {
     this.x = getRandomInt(0, 590);
     this.y = getRandomInt(0, 270);
