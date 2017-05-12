@@ -27,6 +27,11 @@ Simulation = {
       for(var i = 0; i < Scene.balls.length; i++) {
         var ball = Scene.balls[i];
         this.context.drawImage(BALL_IMAGE, ball.x, ball.y, BALL_SIZE, BALL_SIZE);
+        for(var j = 0; j < Scene.ramps.length; j++) {
+          if(Scene.ramps[j].intersects(ball) {
+             ball.stop();
+          }
+        }
       }
     }
 
@@ -80,6 +85,9 @@ Ball.prototype = {
   setPos: function(x, y) {
     this.x = x;
     this.y = y;
+  },
+  stop: function() {
+    this.aX = 0; this.aY = 0; this.dX = 0; this.dY = 0; this.x = 0; this.y = 0;
   },
   updateTime: function() {
     this._t = Simulation.time;
