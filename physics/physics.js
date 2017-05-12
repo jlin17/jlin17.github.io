@@ -1,16 +1,16 @@
-var BALL_IMAGE = new Image();
+BALL_IMAGE = new Image();
 BALL_IMAGE.src = "ball.png";
+BALL_SIZE = 20;
 
-var RAMP_IMAGE = new Image();
+RAMP_IMAGE = new Image();
 RAMP_IMAGE.src = "ramp.png";
+RAMP_SIZE = 32;
 
 Simulation = {
   context: {},
-  scene: {},
   startTime: 0,
   task: -1,
   time: 0,
-  seconds: 0,
   elapsed: function() {
     return new Date().getTime() - this.startTime;
   },
@@ -20,16 +20,21 @@ Simulation = {
   tick: function() {
     this.time = Simulation.elapsed() / 1000;
     var elapsed = Simulation.secondsElapsed();
-    if(elapsed >= 1) {
-      console.log("Another second gone by...");
-      this.seconds++;
-    }
+
+    if(Scene.balls.length > 0 || Scene.ramps.length > 0) this.context.clearRect(0, 0, 640, 320);
 
     if(Scene.balls.length > 0) {
-      this.context.clearRect(0, 0, 640, 320);
       for(var i = 0; i < Scene.balls.length; i++) {
         var ball = Scene.balls[i];
-        this.context.drawImage(BALL_IMAGE, ball.x, ball.y, 20, 20);
+        this.context.drawImage(BALL_IMAGE, ball.x, ball.y, BALL_SIZE, BALL_SIZE);
+      }
+    }
+
+    if(Scene.ramps.length > 0) {
+      for(var i = 0; i < Scene.ramps.length; i++) {
+        var ramp = Scene.ramps[i];
+        this.context.drawImage(RAMP_IMAGE, ramp.x, ramp.y, RAMP_SIZE, RAMP_SIZE);
+        console.log(ramp.intersects(Scene.balls[0]));
       }
     }
   },
@@ -80,6 +85,12 @@ Ball.prototype = {
   },
   updateTime: function() {
     this._t = Simulation.time;
+  },
+  get center() {
+    return {
+      x: (this.x + BALL_SIZE) / 2,
+      y: (this.y + BALL_SIZE) / 2
+    };
   },
   get aX() {
     return this._aX;
@@ -137,12 +148,43 @@ Ball.prototype = {
 Ramp = function(x, y) {
   this.x = x;
   this.y = y;
-  this.rotation = 0;
+  this.flipped = false;
 }
 
 Ramp.prototype = {
-  setRotation: function(rotation) {
-    this.rotation = rotation;
+  setFlipped: function(flipped) {
+    this.flipped = flipped;
+  },
+  get back() {
+    return {
+      x: this.x + ((this.flipped) ? RAMP_SIZE : 0),
+      y: this.y
+    };
+  },
+  get point() {
+    return {
+      x: this.x + ((!this.flipped) ? RAMP_SIZE : 0),
+      y: this.y + RAMP_SIZE
+    }
+  },
+  intersects: function(ball) {
+    if(ball.center.x >= ramp.x && ball.center.x <= ramp.point.x) {
+      var relCoords = this.relCoords(ball);
+      var relX = relCoords.x;
+      var relY = relCoords.y;
+      var slopeY = 0.5 * relX;
+
+      return relY <= slopeY;
+    }
+  },
+  impulse: function(ball) {
+
+  },
+  relCoords: function(ball) {
+    return {
+      x: ball.x - this.x,
+      y: this.y - (ball.center.y + (BALL_SIZE / 2))
+    }
   }
 }
 
