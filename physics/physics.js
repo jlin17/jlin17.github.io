@@ -56,11 +56,9 @@ Simulation = {
 Scene = {
   balls: [],
   ramps: [],
-  addBall: function(ball) {
-    this.balls.push(ball);
-  },
-  addRamp: function(ramp) {
-    this.ramps.push(ramp);
+  add: function(obj) {
+    if(obj.ball) this.balls.push(obj);
+    else if(obj.ramp) this.ramps.push(obj);
   }
 }
 
@@ -72,6 +70,7 @@ Ball = function(x, y) {
   this._dX = 0;
   this._dY = 0;
   this._t = Simulation.time;
+  this.ball = true;
 }
 
 Ball.prototype = {
@@ -149,6 +148,7 @@ Ramp = function(x, y) {
   this.x = x;
   this.y = y;
   this.flipped = false;
+  this.ramp = true;
 }
 
 Ramp.prototype = {
