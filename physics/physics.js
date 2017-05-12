@@ -189,12 +189,19 @@ Ramp.prototype = {
   },
   intersects: function(ball) {
     if(this.boundingBox(ball)) {
-      console.log("Bounded.");
+      var relCoords = this.relCoords(ball);
+      console.log("y cutoff: " + (-0.5 * relCoords.x));
       return false;
     }
   },
   impulse: function(ball) {
 
+  },
+  relCoords: function(ball) {
+    return {
+      x: (this.flipped) ? this.back.x - ball.center.x : ball.center.x - this.back.x,
+      y: this.point.y - ball.bottom.y
+    };
   }
 }
 
