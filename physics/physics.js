@@ -172,7 +172,7 @@ Ramp.prototype = {
       var relCoords = this.relCoords(ball);
       var relX = relCoords.x;
       var relY = relCoords.y;
-      var slopeY = 0.5 * relX;
+      var slopeY = 0.5 * relX * ((!this.flipped) ? -1 : 1);
 
       return relY <= slopeY;
     }
