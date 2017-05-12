@@ -34,7 +34,6 @@ Simulation = {
       for(var i = 0; i < Scene.ramps.length; i++) {
         var ramp = Scene.ramps[i];
         this.context.drawImage(RAMP_IMAGE, ramp.x, ramp.y, RAMP_SIZE, RAMP_SIZE);
-        console.log(ramp.intersects(Scene.balls[0]));
       }
     }
   },
@@ -167,16 +166,25 @@ Ramp.prototype = {
       y: this.y + RAMP_SIZE
     }
   },
-  intersects: function(ball) {
-    if(ball.center.x >= ramp.x && ball.center.x <= ramp.point.x) {
-      if(ball.center.y <= ramp.point.y) {
-        var relCoords = this.relCoords(ball);
-        var relX = relCoords.x;
-        var relY = relCoords.y;
-        var slopeY = 0.5 * relX * ((!this.flipped) ? -1 : 1);
-
-        return relY <= slopeY;
+  boundingBox: function(ball) {
+    if(ball.center.y <= this.point.y) {
+      if(!this.flipped && ball.center.x >= this.back.x && ball.center.x <= this.point.x) {
+        return true;
       }
+      
+      if(this.flipped && ball.center.x >= this.point.x && ball.center.x <= this.back.x) {
+        return true;
+      }
+    }
+  },
+  intersects: function(ball) {
+    if(this.boundingBox(ball)) {
+      var relCoords = this.relCoords(ball);
+      var relX = relCoords.x;
+      var relY = relCoords.y;
+      var slopeY = 0.5 * relX * ((!this.flipped) ? -1 : 1);
+
+      return relY <= slopeY;
     }
   },
   impulse: function(ball) {
