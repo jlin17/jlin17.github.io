@@ -169,12 +169,14 @@ Ramp.prototype = {
   },
   intersects: function(ball) {
     if(ball.center.x >= ramp.x && ball.center.x <= ramp.point.x) {
-      var relCoords = this.relCoords(ball);
-      var relX = relCoords.x;
-      var relY = relCoords.y;
-      var slopeY = 0.5 * relX * ((!this.flipped) ? -1 : 1);
+      if(ball.center.y <= ramp.point.y) {
+        var relCoords = this.relCoords(ball);
+        var relX = relCoords.x;
+        var relY = relCoords.y;
+        var slopeY = 0.5 * relX * ((!this.flipped) ? -1 : 1);
 
-      return relY <= slopeY;
+        return relY <= slopeY;
+      }
     }
   },
   impulse: function(ball) {
