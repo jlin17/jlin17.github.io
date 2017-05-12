@@ -190,7 +190,9 @@ Ramp.prototype = {
   intersects: function(ball) {
     if(this.boundingBox(ball)) {
       var relCoords = this.relCoords(ball);
-      console.log("y cutoff: " + (-0.5 * relCoords.x));
+      console.log(relCoords.y);
+      console.log(relCoords.x);
+      if(relCoords.y <= (relCoords.x + (BALL_SIZE / 2))) Simulation.stop();
       return false;
     }
   },
@@ -199,7 +201,7 @@ Ramp.prototype = {
   },
   relCoords: function(ball) {
     return {
-      x: (this.flipped) ? this.back.x - ball.center.x : ball.center.x - this.back.x,
+      x: (this.flipped) ? this.back.x - ball.bottom.x : ball.bottom.x - this.back.x,
       y: this.point.y - ball.bottom.y
     };
   }
