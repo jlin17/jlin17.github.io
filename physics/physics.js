@@ -28,7 +28,7 @@ Simulation = {
         var ball = Scene.balls[i];
         this.context.drawImage(BALL_IMAGE, ball.x, ball.y, BALL_SIZE, BALL_SIZE);
         for(var j = 0; j < Scene.ramps.length; j++) {
-          if(Scene.ramps[j].intersects(ball) {
+          if(Scene.ramps[j].intersects(ball)) {
              ball.stop();
           }
         }
