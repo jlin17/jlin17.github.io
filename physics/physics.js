@@ -87,7 +87,7 @@ Ball.prototype = {
     this.y = y;
   },
   stop: function() {
-    this.updateTime(); this.aX = 0; this.aY = 0; this.dX = 0; this.dY = 0; this.x = 0; this.y = 0;
+    this.aX = 0; this.aY = 0; this.dX = 0; this.dY = 0;
   },
   updateTime: function() {
     this._t = Simulation.time;
