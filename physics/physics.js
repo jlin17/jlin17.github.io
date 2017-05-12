@@ -193,7 +193,7 @@ Ramp.prototype = {
       var relCoords = this.relCoords(ball);
       console.log(relCoords.y);
       console.log(relCoords.x);
-      if(relCoords.y <= RAMP_SLOPE * relCoords.x) Simulation.stop();
+      if(relCoords.y <= -1 * relCoords.x + 32) Simulation.stop();
       return false;
     }
   },
