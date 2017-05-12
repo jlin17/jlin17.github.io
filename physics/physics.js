@@ -87,10 +87,16 @@ Ball.prototype = {
     this.y = y;
   },
   stop: function() {
-    this.aX = 0; this.aY = 0; this.dX = 0; this.dY = 0;
+    this.dX = 0; this.dY = 0; this.aX = 0; this.aY = 0;
   },
   updateTime: function() {
     this._t = Simulation.time;
+  },
+  get bottom() {
+    return {
+      x: (this.center.x),
+      y: (this.y + BALL_SIZE)
+    };
   },
   get center() {
     return {
@@ -175,34 +181,20 @@ Ramp.prototype = {
     }
   },
   boundingBox: function(ball) {
-    if(ball.center.y <= this.point.y) {
-      if(!this.flipped && ball.center.x >= this.back.x && ball.center.x <= this.point.x) {
-        return true;
-      }
-      
-      if(this.flipped && ball.center.x >= this.point.x && ball.center.x <= this.back.x) {
-        return true;
-      }
+    if(ball.bottom.y >= this.back.y && ball.bottom.y <= this.point.y) {
+      if(!this.flipped && ball.bottom.x <= this.point.x && ball.bottom.x >= this.back.x) return true;
+      if(this.flipped && ball.bottom.x >= this.point.x && ball.bottom.x <= this.back.x) return true;
     }
+    return false;
   },
   intersects: function(ball) {
     if(this.boundingBox(ball)) {
-      var relCoords = this.relCoords(ball);
-      var relX = relCoords.x;
-      var relY = relCoords.y;
-      var slopeY = 0.5 * relX * ((!this.flipped) ? -1 : 1);
-
-      return relY <= slopeY;
+      console.log("Bounded.");
+      return false;
     }
   },
   impulse: function(ball) {
 
-  },
-  relCoords: function(ball) {
-    return {
-      x: ball.x - this.x,
-      y: this.y - (ball.center.y + (BALL_SIZE / 2))
-    }
   }
 }
 
