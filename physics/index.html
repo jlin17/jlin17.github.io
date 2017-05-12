@@ -1,6 +1,7 @@
 <html>
   <head>
-    <title>OOP with CARS</title>
+    <title>this is definitely physics</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
   </head>
   <style>
     body {
@@ -90,6 +91,7 @@
       transform: translate(-50%, -50%);
       height: 320px;
       width: 640px;
+      image-rendering: pixelated;
     }
   </style>
   <body onload="document.getElementById('input').focus()">
@@ -141,7 +143,7 @@
 
     function executeCode(str) {
       try {
-        eval(str);
+        eval.apply(null, [str]);
       } catch (e) {
         showError(e.toString());
       }

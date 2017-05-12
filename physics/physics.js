@@ -1,3 +1,9 @@
+var BALL_IMAGE = new Image();
+BALL_IMAGE.src = "ball.png";
+
+var RAMP_IMAGE = new Image();
+RAMP_IMAGE.src = "ramp.png";
+
 Simulation = {
   context: {},
   scene: {},
@@ -20,13 +26,16 @@ Simulation = {
     }
 
     if(Scene.balls.length > 0) {
+      this.context.clearRect(0, 0, 640, 320);
       for(var i = 0; i < Scene.balls.length; i++) {
-        Scene.balls[i].motion(elapsed);
+        var ball = Scene.balls[i];
+        this.context.drawImage(BALL_IMAGE, ball.x, ball.y, 20, 20);
       }
     }
   },
   setCanvas: function(context) {
     this.context = context;
+    this.context.imageSmoothingEnabled = false;
   },
   start: function() {
     this.startTime = new Date().getTime();
@@ -51,21 +60,16 @@ Scene = {
 }
 
 Ball = function(x, y) {
-  this.x = x;
-  this.y = y;
-  this.dX = 0;
-  this.dY = 0;
-  this.aX = 0;
-  this.aY = 0;
+  this._aX = 0;
+  this._aY = 0;
+  this._x = x;
+  this._y = y;
+  this._dX = 0;
+  this._dY = 0;
+  this._t = Simulation.time;
 }
 
 Ball.prototype = {
-  motion: function(factor) {
-    this.dX += (this.aX * factor);
-    this.dY += (this.aY * factor);
-    this.x += (this.dX * factor);
-    this.y += (this.dY * factor);
-  },
   randomPos: function() {
     this.x = getRandomInt(0, 590);
     this.y = getRandomInt(0, 270);
@@ -73,6 +77,58 @@ Ball.prototype = {
   setPos: function(x, y) {
     this.x = x;
     this.y = y;
+  },
+  updateTime: function() {
+    this._t = Simulation.time;
+  },
+  get aX() {
+    return this._aX;
+  },
+  get aY() {
+    return this._aY;
+  },
+  get dX() {
+    return this._dX + (this.aX * this.t);
+  },
+  get dY() {
+    return this._dY + (this.aY * this.t);
+  },
+  get x() {
+    return this._x + (this.dX * this.t);
+  },
+  get y() {
+    return this._y + (this.dY * this.t);
+  },
+  get t() {
+    return Simulation.time - this._t;
+  },
+  set x(val) {
+    this._x = val;
+    this.updateTime();
+  },
+  set y(val) {
+    this._y = val;
+    this.updateTime();
+  },
+  set dX(val) {
+    this._x = this.x;
+    this._dX = val;
+    this.updateTime();
+  },
+  set dY(val) {
+    this._y = this.y;
+    this._dY = val;
+    this.updateTime();
+  },
+  set aX(val) {
+    this._x = this.x;
+    this._aX = val;
+    this.updateTime();
+  },
+  set aY(val) {
+    this._y = this.y;
+    this._aY = val;
+    this.updateTime();
   }
 }
 
