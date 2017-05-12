@@ -5,6 +5,7 @@ BALL_SIZE = 20;
 RAMP_IMAGE = new Image();
 RAMP_IMAGE.src = "ramp.png";
 RAMP_SIZE = 32;
+RAMP_SLOPE = 2;
 
 Simulation = {
   context: {},
@@ -192,7 +193,7 @@ Ramp.prototype = {
       var relCoords = this.relCoords(ball);
       console.log(relCoords.y);
       console.log(relCoords.x);
-      if(relCoords.y <= 1.6 * relCoords.x) Simulation.stop();
+      if(relCoords.y <= RAMP_SLOPE * relCoords.x) Simulation.stop();
       return false;
     }
   },
