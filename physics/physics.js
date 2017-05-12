@@ -122,11 +122,13 @@ Ball.prototype = {
   },
   set aX(val) {
     this._x = this.x;
+    this._dX = this.dX;
     this._aX = val;
     this.updateTime();
   },
   set aY(val) {
     this._y = this.y;
+    this._dY = this.dY;
     this._aY = val;
     this.updateTime();
   }
