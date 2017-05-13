@@ -38,7 +38,6 @@ Simulation = {
             }
 
             if(ramp.justRolled(ball)) {
-              console.log("Just rolled.");
               ball.rolling = false;
               var _y = ball.y;
               ball.aX = 0;
@@ -219,7 +218,7 @@ Ramp.prototype = {
     var relX = this.relCoords(ball).x;
     ball.rolling = true;
     ball.stop();
-    ball.y = this.point.y - this.slopeY(relX) - 2 - (BALL_SIZE);
+    ball.y = this.point.y - this.slopeY(relX) - 1 - (BALL_SIZE);
     ball.aX = Simulation.gravity * ((this.flipped) ? -1 : 1);
     ball.aY = Simulation.gravity * ((this.flipped) ? -1 : 1);
   },
@@ -231,10 +230,11 @@ Ramp.prototype = {
   },
   justRolled: function(ball) {
     var relCoords = this.relCoords(ball);
-    return ball.rolling && relCoords.y <= 1 && ((!this.flipped && (ball.x <= this.point.x)) || (this.flipped && (ball.x >= this.point.x)));
+    return ball.rolling && relCoords.y <= 2 && ((!this.flipped && (ball.x <= this.point.x)) || (this.flipped && (ball.x >= this.point.x)));
   },
   slopeY: function(relX) {
-    return -2 * relX + 47;
+    return -1 * relX + 37;
+    // return -0.8692360633 * relX + 30.94012388;
   }
 }
 
