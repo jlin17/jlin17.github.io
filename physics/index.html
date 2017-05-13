@@ -84,7 +84,8 @@
     }
 
     canvas#square {
-      background-image: url("lab-bg.png");
+      display: none;
+      background-image: url("lab.png");
       position: absolute;
       background-color: #222;
       top: 50%;
@@ -115,6 +116,10 @@
     var output = document.getElementById("output");
     var $output = $(output);
     var lastEntry;
+
+    $(function() {
+      $(canvas).hide().fadeIn(1000);
+    });
 
     Simulation.setCanvas(canvas.getContext("2d"));
 
