@@ -29,9 +29,19 @@ Simulation = {
       for(var i = 0; i < Scene.balls.length; i++) {
         var ball = Scene.balls[i];
         this.context.drawImage(BALL_IMAGE, ball.x, ball.y, BALL_SIZE, BALL_SIZE);
-        for(var j = 0; j < Scene.ramps.length; j++) {
-          if(Scene.ramps[j].intersects(ball)) {
-             ball.stop();
+        if(ball.collisions) {
+          for(var j = 0; j < Scene.ramps.length; j++) {
+            var ramp = Scene.ramps[j];
+
+            if(ramp.intersects(ball)) {
+              ramp.impulse(ball);
+            }
+
+            if(ramp.justRolled(ball)) {
+              var _y = ball.y;
+              ball.aX = 0;
+              ball.y = _y - ball.dY;
+            }
           }
         }
       }
@@ -63,8 +73,11 @@ Scene = {
   balls: [],
   ramps: [],
   add: function(obj) {
-    if(obj.ball) this.balls.push(obj);
-    else if(obj.ramp) this.ramps.push(obj);
+    if(arguments.length == 0) return;
+    for(var i = 0; i < arguments.length; i++) {
+      if(arguments[i].ball) this.balls.push(arguments[i]);
+      else if(arguments[i].ramp) this.ramps.push(arguments[i]);
+    }
   }
 }
 
@@ -103,8 +116,8 @@ Ball.prototype = {
   },
   get center() {
     return {
-      x: (this.x + BALL_SIZE) / 2,
-      y: (this.y + BALL_SIZE) / 2
+      x: (2 * this.x + BALL_SIZE) / 2,
+      y: (2 * this.y + BALL_SIZE) / 2
     };
   },
   get aX() {
@@ -191,25 +204,27 @@ Ramp.prototype = {
     return false;
   },
   intersects: function(ball) {
+    var relCoords = this.relCoords(ball);
     if(this.boundingBox(ball)) {
-      var relCoords = this.relCoords(ball);
-      if(relCoords.y <= this.slopeY(relCoords.x)) {
-        this.impulse(ball);
-      }
+      if(relCoords.y <= this.slopeY(relCoords.x)) return true;
     }
   },
   impulse: function(ball) {
     var _aY = ball.aY;
     ball.stop();
-    ball.y -= 1;
-    ball.aX = _aY * Math.SQRT2;
-    ball.aY = _aY * Math.SQRT2;
+    ball.y -= 2;
+    ball.aX = Simulation.gravity * ((this.flipped) ? -1 : 1);
+    ball.aY = Simulation.gravity * ((this.flipped) ? -1 : 1);
   },
   relCoords: function(ball) {
     return {
       x: (this.flipped) ? this.back.x - ball.bottom.x : ball.bottom.x - this.back.x,
       y: this.point.y - ball.bottom.y
     };
+  },
+  justRolled: function(ball) {
+    var relCoords = this.relCoords(ball);
+    return (ball.aX == ball.aY) && relCoords.x >= BALL_SIZE + (BALL_SIZE / 5) && relCoords.y <= 0;
   },
   slopeY: function(relX) {
     return -2 * relX + 47;
