@@ -9,6 +9,7 @@ RAMP_SLOPE = 2;
 
 Simulation = {
   context: {},
+  gravity: 60,
   startTime: 0,
   task: -1,
   time: 0,
@@ -69,7 +70,7 @@ Scene = {
 
 Ball = function(x, y) {
   this._aX = 0;
-  this._aY = 0;
+  this._aY = Simulation.gravity;
   this._x = x;
   this._y = y;
   this._dX = 0;
@@ -88,6 +89,7 @@ Ball.prototype = {
     this.y = y;
   },
   stop: function() {
+    this._y = this.y;
     this.dX = 0; this.dY = 0; this.aX = 0; this.aY = 0;
   },
   updateTime: function() {
@@ -191,20 +193,26 @@ Ramp.prototype = {
   intersects: function(ball) {
     if(this.boundingBox(ball)) {
       var relCoords = this.relCoords(ball);
-      console.log(relCoords.y);
-      console.log(relCoords.x);
-      if(relCoords.y <= -1 * relCoords.x + 32) Simulation.stop();
-      return false;
+      if(relCoords.y <= this.slopeY(relCoords.x)) {
+        this.impulse(ball);
+      }
     }
   },
   impulse: function(ball) {
-
+    var _aY = ball.aY;
+    ball.stop();
+    ball.y -= 1;
+    ball.aX = _aY * Math.SQRT2;
+    ball.aY = _aY * Math.SQRT2;
   },
   relCoords: function(ball) {
     return {
       x: (this.flipped) ? this.back.x - ball.bottom.x : ball.bottom.x - this.back.x,
       y: this.point.y - ball.bottom.y
     };
+  },
+  slopeY: function(relX) {
+    return -2 * relX + 47;
   }
 }
 
