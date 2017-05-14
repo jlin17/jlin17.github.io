@@ -34,7 +34,7 @@ Simulation = {
       for(var i = 0; i < Scene.balls.length; i++) {
         var ball = Scene.balls[i];
         this.context.drawImage(BALL_IMAGE, ball.x, ball.y, BALL_SIZE, BALL_SIZE);
-        if(ball.collisions) {
+        if(ball.collide) {
           for(var j = 0; j < Scene.ramps.length; j++) {
             var ramp = Scene.ramps[j];
 
@@ -54,7 +54,7 @@ Simulation = {
           if(Simulation.floor) {
             if(ball.y > 130) {
               CLANG.play();
-              ball.aX = -10;
+              ball.aX = -10 * ((ball.dX < 0) ? -1 : 1);
               ball.y = 130;
               ball.dY = 0;
               ball.aY = 0;
@@ -62,7 +62,7 @@ Simulation = {
             }
           }
 
-          if(ball.stopAtRest && ball.dX - (2 * Math.abs(ball.aX)) <= 0) {
+          if(ball.stopAtRest && Math.abs(ball.dX) - (2 * Math.abs(ball.aX)) <= 0) {
             ball.aX = 0;
             ball.dX = 0;
             ball.stopAtRest = false;
@@ -114,6 +114,7 @@ Ball = function(x, y) {
   this._dY = 0;
   this._t = Simulation.time;
   this.ball = true;
+  this.collide = false;
   this.rolling = false;
   this.stopAtRest = false;
 }
