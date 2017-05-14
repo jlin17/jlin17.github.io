@@ -1,3 +1,7 @@
+CLANG = new Howl({
+  src: ['clang.mp3']
+});
+
 BALL_IMAGE = new Image();
 BALL_IMAGE.src = "ball.png";
 BALL_SIZE = 20;
@@ -34,6 +38,7 @@ Simulation = {
             var ramp = Scene.ramps[j];
 
             if(ramp.intersects(ball)) {
+              CLANG.play();
               ramp.impulse(ball);
             }
 
@@ -214,7 +219,6 @@ Ramp.prototype = {
     return false;
   },
   impulse: function(ball) {
-    console.log("Impulse!");
     var relX = this.relCoords(ball).x;
     ball.rolling = true;
     ball.stop();
