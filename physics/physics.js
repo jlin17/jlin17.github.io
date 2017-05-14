@@ -249,16 +249,14 @@ Ramp.prototype = {
     return false;
   },
   impulse: function(ball) {
-    var rel = this.relCoords(ball);
-    ball.rolling = true;
     ball.stop();
     if(ball.bottom.x >= this.back.x) {
-      console.log("Normal roll");
+      var rel = this.relCoords(ball);
       ball.y = this.point.y - this.slopeY(rel.x) - 1 - (BALL_SIZE);
       ball.aX = Simulation.gravity * ((this.flipped) ? -1 : 1);
       ball.aY = Simulation.gravity * ((this.flipped) ? -1 : 1);
+      ball.rolling = true;
     } else {
-      console.log("Back-bounce");
       ball.x = this.back.x - BALL_SIZE;
       ball.aX = -10;
       ball.dX = -5;
