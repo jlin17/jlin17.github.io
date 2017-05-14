@@ -12,12 +12,14 @@
     }
 
     div#code {
-      background-color: #F5F5F5;
+      background-color: #EEE;
       position: absolute;
       bottom: 0px;
       width: 100vw;
       height: 30%;
       padding: 0px;
+      border-top: 2px solid #00838F;
+      box-shadow: 0px 0px 20px 10px black;
     }
 
     div#error {
@@ -105,7 +107,7 @@
       <div id="error">Error test message</div>
       <div id="output"></div>
       <span class="input-marker">&gt;</span>
-      <input type="text" id="input" />
+      <input type="text" id="input" placeholder="Type some code..." />
     </div>
   </body>
   <script src="howler.core.js"></script>
