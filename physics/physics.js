@@ -147,6 +147,12 @@ Ball.prototype = {
       y: (2 * this.y + BALL_SIZE) / 2
     };
   },
+  get right() {
+    return {
+      x: this.x + BALL_SIZE,
+      y: this.center.y
+    };
+  },
   get aX() {
     return this._aX;
   },
@@ -229,6 +235,8 @@ Ramp.prototype = {
     if(ball.bottom.y >= this.back.y && ball.bottom.y <= this.point.y) {
       if(!this.flipped && ball.bottom.x <= this.point.x && ball.bottom.x >= this.back.x) return true;
       if(this.flipped && ball.bottom.x >= this.point.x && ball.bottom.x <= this.back.x) return true;
+      if(!this.flipped && ball.right.x >= this.back.x && ball.right.x <= this.point.x) return true;
+      if(this.flipped && ball.right.x <= this.back.x && ball.right.x >= this.point.x) return true;
     }
     return false;
   },
@@ -241,12 +249,21 @@ Ramp.prototype = {
     return false;
   },
   impulse: function(ball) {
-    var relX = this.relCoords(ball).x;
+    var rel = this.relCoords(ball);
     ball.rolling = true;
     ball.stop();
-    ball.y = this.point.y - this.slopeY(relX) - 1 - (BALL_SIZE);
-    ball.aX = Simulation.gravity * ((this.flipped) ? -1 : 1);
-    ball.aY = Simulation.gravity * ((this.flipped) ? -1 : 1);
+    if(ball.bottom.x >= this.back.x) {
+      console.log("Normal roll");
+      ball.y = this.point.y - this.slopeY(rel.x) - 1 - (BALL_SIZE);
+      ball.aX = Simulation.gravity * ((this.flipped) ? -1 : 1);
+      ball.aY = Simulation.gravity * ((this.flipped) ? -1 : 1);
+    } else {
+      console.log("Back-bounce");
+      ball.x = this.back.x - BALL_SIZE;
+      ball.aX = -10;
+      ball.dX = -5;
+      ball.aY = Simulation.gravity;
+    }
   },
   relCoords: function(ball) {
     return {
