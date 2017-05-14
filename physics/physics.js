@@ -2,6 +2,12 @@ CLANG = new Howl({
   src: ['clang.mp3']
 });
 
+BG = new Image();
+BG.src = "lab.png";
+BG.addEventListener("load", function(e) {
+  Simulation.background();
+});
+
 BALL_IMAGE = new Image();
 BALL_IMAGE.src = "ball.png";
 BALL_SIZE = 20;
@@ -28,6 +34,9 @@ Simulation = {
     if(val) CLANG.volume(1);
     else CLANG.volume(0);
   },
+  background: function() {
+    this.context.drawImage(BG, 0, 0, Simulation.context.canvas.width, Simulation.context.canvas.height);
+  },
   elapsed: function() {
     return new Date().getTime() - this.startTime;
   },
@@ -39,6 +48,8 @@ Simulation = {
     var elapsed = Simulation.secondsElapsed();
 
     if(Scene.balls.length > 0 || Scene.ramps.length > 0) this.context.clearRect(0, 0, 640, 320);
+
+    Simulation.background();
 
     if(Scene.balls.length > 0) {
       for(var i = 0; i < Scene.balls.length; i++) {

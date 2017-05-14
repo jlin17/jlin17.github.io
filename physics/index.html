@@ -88,9 +88,8 @@
 
     canvas#square {
       box-shadow: 0px 0px 10px black;
-      background-image: url("lab.png");
+      background-color: black;
       position: absolute;
-      background-color: #222;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
@@ -142,6 +141,8 @@
           executeCode(inputVal);
         }, 1);
         input.value = "";
+      } else if(e.code == "Backquote") {
+        Simulation.stop();
       }
     }
 
