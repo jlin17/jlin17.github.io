@@ -13,6 +13,7 @@ RAMP_SLOPE = 2;
 
 Simulation = {
   context: {},
+  floor: false,
   gravity: 60,
   startTime: 0,
   task: -1,
@@ -48,6 +49,23 @@ Simulation = {
               ball.aX = 0;
               ball.y = _y - ball.dY;
             }
+          }
+
+          if(Simulation.floor) {
+            if(ball.y > 130) {
+              CLANG.play();
+              ball.aX = -10;
+              ball.y = 130;
+              ball.dY = 0;
+              ball.aY = 0;
+              ball.stopAtRest = true;
+            }
+          }
+
+          if(ball.stopAtRest && ball.dX - (2 * Math.abs(ball.aX)) <= 0) {
+            ball.aX = 0;
+            ball.dX = 0;
+            ball.stopAtRest = false;
           }
         }
       }
@@ -97,6 +115,7 @@ Ball = function(x, y) {
   this._t = Simulation.time;
   this.ball = true;
   this.rolling = false;
+  this.stopAtRest = false;
 }
 
 Ball.prototype = {
@@ -149,10 +168,12 @@ Ball.prototype = {
     return Simulation.time - this._t;
   },
   set x(val) {
+    this._y = this.y;
     this._x = val;
     this.updateTime();
   },
   set y(val) {
+    this._x = this.x;
     this._y = val;
     this.updateTime();
   },
@@ -238,7 +259,7 @@ Ramp.prototype = {
   },
   slopeY: function(relX) {
     return -1 * relX + 37;
-    // return -0.8692360633 * relX + 30.94012388;
+    // return -0.8692360633 * relX + 30.94012388; // <-- old ramp slope equation (roughly 40-degree model)
   }
 }
 

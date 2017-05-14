@@ -76,6 +76,7 @@
     }
 
     div#square-container {
+      background-image: url("noise.png");
       position: absolute;
       left: 0;
       top: 0;
@@ -84,7 +85,7 @@
     }
 
     canvas#square {
-      display: none;
+      box-shadow: 0px 0px 10px black;
       background-image: url("lab.png");
       position: absolute;
       background-color: #222;
@@ -119,7 +120,7 @@
     var lastEntry;
 
     $(function() {
-      $(canvas).hide().fadeIn(1000);
+      $("#square-container").hide().fadeIn(1000);
     });
 
     Simulation.setCanvas(canvas.getContext("2d"));
