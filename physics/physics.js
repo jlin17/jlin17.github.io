@@ -8,6 +8,8 @@ BALL_SIZE = 20;
 
 RAMP_IMAGE = new Image();
 RAMP_IMAGE.src = "ramp.png";
+RAMP_FLIPPED_IMAGE = new Image();
+RAMP_FLIPPED_IMAGE.src = "ramp_flipped.png";
 RAMP_SIZE = 32;
 RAMP_SLOPE = 2;
 
@@ -18,6 +20,7 @@ Simulation = {
   startTime: 0,
   task: -1,
   time: 0,
+  walls: false,
   elapsed: function() {
     return new Date().getTime() - this.startTime;
   },
@@ -43,11 +46,17 @@ Simulation = {
               ramp.impulse(ball);
             }
 
-            if(ramp.justRolled(ball)) {
-              ball.rolling = false;
+            if(ramp.justRolledDown(ball)) {
+              ball.rollingDown = false;
               var _y = ball.y;
               ball.aX = 0;
               ball.y = _y - ball.dY;
+            }
+
+            if(ramp.justRolledUp(ball)) {
+              ball.rollingUp = false;
+              ball.aX = 0;
+              ball.aY = Simulation.gravity;
             }
           }
 
@@ -59,6 +68,24 @@ Simulation = {
               ball.dY = 0;
               ball.aY = 0;
               ball.stopAtRest = true;
+            }
+          }
+
+          if(Simulation.walls) {
+            if(ball.x < 0) {
+              CLANG.play();
+              ball.x = 0;
+              ball.dX = 20;
+              ball.aX = -5;
+              if(ball.dY < 0) ball.dY *= -1;
+              if(ball.aY < 0) ball.aY *= -1;
+            } else if(ball.right.x > 300) {
+              CLANG.play();
+              ball.x = 300 - BALL_SIZE;
+              ball.dX = -20;
+              ball.aX = 5;
+              if(ball.dY < 0) ball.dY *= -1;
+              if(ball.aY < 0) ball.aY *= -1;
             }
           }
 
@@ -74,7 +101,8 @@ Simulation = {
     if(Scene.ramps.length > 0) {
       for(var i = 0; i < Scene.ramps.length; i++) {
         var ramp = Scene.ramps[i];
-        this.context.drawImage(RAMP_IMAGE, ramp.x, ramp.y, RAMP_SIZE, RAMP_SIZE);
+        if(ramp.flipped) this.context.drawImage(RAMP_FLIPPED_IMAGE, ramp.x, ramp.y, RAMP_SIZE, RAMP_SIZE);
+        else this.context.drawImage(RAMP_IMAGE, ramp.x, ramp.y, RAMP_SIZE, RAMP_SIZE);
       }
     }
   },
@@ -115,7 +143,8 @@ Ball = function(x, y) {
   this._t = Simulation.time;
   this.ball = true;
   this.collide = false;
-  this.rolling = false;
+  this.rollingDown = false;
+  this.rollingUp = false;
   this.stopAtRest = false;
 }
 
@@ -132,6 +161,10 @@ Ball.prototype = {
     this._y = this.y;
     this.dX = 0; this.dY = 0; this.aX = 0; this.aY = 0;
   },
+  updatePos: function() {
+    this._x = this.x;
+    this._y = this.y;
+  },
   updateTime: function() {
     this._t = Simulation.time;
   },
@@ -145,6 +178,12 @@ Ball.prototype = {
     return {
       x: (2 * this.x + BALL_SIZE) / 2,
       y: (2 * this.y + BALL_SIZE) / 2
+    };
+  },
+  get left() {
+    return {
+      x: this.x,
+      y: this.center.y
     };
   },
   get right() {
@@ -216,9 +255,6 @@ Ramp = function(x, y) {
 }
 
 Ramp.prototype = {
-  setFlipped: function(flipped) {
-    this.flipped = flipped;
-  },
   get back() {
     return {
       x: this.x + ((this.flipped) ? RAMP_SIZE : 0),
@@ -236,7 +272,7 @@ Ramp.prototype = {
       if(!this.flipped && ball.bottom.x <= this.point.x && ball.bottom.x >= this.back.x) return true;
       if(this.flipped && ball.bottom.x >= this.point.x && ball.bottom.x <= this.back.x) return true;
       if(!this.flipped && ball.right.x >= this.back.x && ball.right.x <= this.point.x) return true;
-      if(this.flipped && ball.right.x <= this.back.x && ball.right.x >= this.point.x) return true;
+      if(this.flipped && ball.left.x <= this.back.x && ball.left.x >= this.point.x) return true;
     }
     return false;
   },
@@ -249,18 +285,35 @@ Ramp.prototype = {
     return false;
   },
   impulse: function(ball) {
+    var rollUp = this.rollUp(ball);
+    var _dX = ball.dX;
+
     ball.stop();
-    if(ball.bottom.x >= this.back.x) {
-      var rel = this.relCoords(ball);
-      ball.y = this.point.y - this.slopeY(rel.x) - 1 - (BALL_SIZE);
-      ball.aX = Simulation.gravity * ((this.flipped) ? -1 : 1);
-      ball.aY = Simulation.gravity * ((this.flipped) ? -1 : 1);
-      ball.rolling = true;
+    ball.aY = Simulation.gravity;
+
+    var rel = this.relCoords(ball);
+    ball.y = this.point.y - this.slopeY(rel.x) - 2 - (BALL_SIZE);
+
+    if(!rollUp) {
+      if((!this.flipped && ball.bottom.x >= this.back.x) || (this.flipped && ball.right.x <= this.back.x)) {
+        ball.aX = Simulation.gravity * ((this.flipped) ? -1 : 1);
+        ball.rollingDown = true;
+      } else {
+        if(!this.flipped) {
+          ball.aX = -10;
+          ball.dY = -25;
+          ball.dX = -25;
+        } else {
+          ball.aX = 10;
+          ball.dX = 25;
+          ball.dY = -25;
+        }
+      }
     } else {
-      ball.x = this.back.x - BALL_SIZE;
-      ball.aX = -10;
-      ball.dX = -5;
-      ball.aY = Simulation.gravity;
+      ball.dX = _dX;
+      ball.dY = -1 * Math.abs(_dX);
+      ball.aX = Simulation.gravity * ((this.flipped) ? -1 : 1);
+      ball.rollingUp = true;
     }
   },
   relCoords: function(ball) {
@@ -269,9 +322,17 @@ Ramp.prototype = {
       y: this.point.y - ball.bottom.y
     };
   },
-  justRolled: function(ball) {
+  rollUp: function(ball) {
+    if(this.flipped && (ball.dX > 0 || ball.aX > 0)) return true;
+    if(!this.flipped && (ball.dX < 0 || ball.aX < 0)) return true;
+    return false;
+  },
+  justRolledDown: function(ball) {
     var relCoords = this.relCoords(ball);
-    return ball.rolling && relCoords.y <= 2 && ((!this.flipped && (ball.x <= this.point.x)) || (this.flipped && (ball.x >= this.point.x)));
+    return ball.rollingDown && relCoords.y <= 2 && ((!this.flipped && (ball.x <= this.point.x)) || (this.flipped && (ball.right.x >= this.point.x)));
+  },
+  justRolledUp: function(ball) {
+    return ball.rollingUp && ball.bottom.y < this.back.y && ((this.flipped && ball.right.x > this.back.x) || (!this.flipped && ball.left.x > this.back.x));
   },
   slopeY: function(relX) {
     return -1 * relX + 37;
