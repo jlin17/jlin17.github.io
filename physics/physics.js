@@ -21,6 +21,13 @@ Simulation = {
   task: -1,
   time: 0,
   walls: false,
+  get sound() {
+    return CLANG.volume() == 1;
+  },
+  set sound(val) {
+    if(val) CLANG.volume(1);
+    else CLANG.volume(0);
+  },
   elapsed: function() {
     return new Date().getTime() - this.startTime;
   },
