@@ -10,14 +10,13 @@ BG.addEventListener("load", function(e) {
 
 BALL_IMAGE = new Image();
 BALL_IMAGE.src = "ball.png";
-BALL_SIZE = 20;
+BALL_SIZE = 40;
 
 RAMP_IMAGE = new Image();
 RAMP_IMAGE.src = "ramp.png";
 RAMP_FLIPPED_IMAGE = new Image();
 RAMP_FLIPPED_IMAGE.src = "ramp_flipped.png";
-RAMP_SIZE = 32;
-RAMP_SLOPE = 2;
+RAMP_SIZE = 64;
 
 Simulation = {
   context: {},
@@ -79,10 +78,10 @@ Simulation = {
           }
 
           if(Simulation.floor) {
-            if(ball.y > 130) {
+            if(ball.bottom.y > Simulation.context.canvas.height) {
               CLANG.play();
               ball.aX = -10 * ((ball.dX < 0) ? -1 : 1);
-              ball.y = 130;
+              ball.y = Simulation.context.canvas.height - BALL_SIZE;
               ball.dY = 0;
               ball.aY = 0;
               ball.stopAtRest = true;
@@ -97,9 +96,9 @@ Simulation = {
               ball.aX = -5;
               if(ball.dY < 0) ball.dY *= -1;
               if(ball.aY < 0) ball.aY *= -1;
-            } else if(ball.right.x > 300) {
+            } else if(ball.right.x > Simulation.context.canvas.width) {
               CLANG.play();
-              ball.x = 300 - BALL_SIZE;
+              ball.x = Simulation.context.canvas.width - BALL_SIZE;
               ball.dX = -20;
               ball.aX = 5;
               if(ball.dY < 0) ball.dY *= -1;
@@ -107,7 +106,7 @@ Simulation = {
             }
           }
 
-          if(ball.stopAtRest && Math.abs(ball.dX) - (2 * Math.abs(ball.aX)) <= 0) {
+          if(ball.stopAtRest && Math.abs(ball.dX) - (3 * Math.abs(ball.aX)) <= 0) {
             ball.aX = 0;
             ball.dX = 0;
             ball.stopAtRest = false;
@@ -353,7 +352,8 @@ Ramp.prototype = {
     return ball.rollingUp && ball.bottom.y < this.back.y && ((this.flipped && ball.right.x > this.back.x) || (!this.flipped && ball.left.x > this.back.x));
   },
   slopeY: function(relX) {
-    return -1 * relX + 37;
+    return -1 * relX + 73;
+    // return -1 * relX + 37;
     // return -0.8692360633 * relX + 30.94012388; // <-- old ramp slope equation (roughly 40-degree model)
   }
 }

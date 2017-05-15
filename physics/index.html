@@ -125,6 +125,8 @@
     });
 
     Simulation.setCanvas(canvas.getContext("2d"));
+    Simulation.context.canvas.height = 320;
+    Simulation.context.canvas.width = 640;
 
     document.onkeydown = function(e) {
       if(e.code == "ArrowUp") {
