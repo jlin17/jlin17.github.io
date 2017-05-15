@@ -122,6 +122,11 @@
 
     $(function() {
       $("#square-container").hide().fadeIn(1000);
+
+      scaleOutput();
+      $(window).resize(function() {
+        scaleOutput();
+      });
     });
 
     Simulation.setCanvas(canvas.getContext("2d"));
@@ -160,6 +165,10 @@
       } catch (e) {
         showError(e.toString());
       }
+    }
+
+    function scaleOutput() {
+      $(output).height($("#code").height() - input.clientHeight - 20);
     }
 
     function showError(str) {
