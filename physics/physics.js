@@ -21,7 +21,7 @@ RAMP_SIZE = 64;
 Simulation = {
   context: {},
   floor: false,
-  gravity: 60,
+  gravity: 200,
   startTime: 0,
   task: -1,
   time: 0,
