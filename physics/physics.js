@@ -46,6 +46,7 @@ Simulation = {
     return this.time - this.seconds;
   },
   saveImage: function() {
+    console.log("I'm supposed to be saving an image right now...");
     if(this._a == null) this._a = document.createElement("a");
     this._a.download = "sec_" + this.time + ".png";
     this._a.href = this.context.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
@@ -55,7 +56,8 @@ Simulation = {
     this.time = Simulation.elapsed() / 1000;
     var elapsed = Simulation.secondsElapsed();
 
-    if(this.elapsed >= 1) {
+    if(elapsed >= 1) {
+      console.log("Another second gone by...");
       this.seconds++;
       if(this.exportGif && (this.seconds >= this.gifRange[0] && this.seconds <= this.gifRange[1])) this.saveImage();
     }
