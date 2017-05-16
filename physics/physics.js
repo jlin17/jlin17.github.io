@@ -20,8 +20,11 @@ RAMP_SIZE = 64;
 
 Simulation = {
   context: {},
+  exportGif: false,
+  gifRange: [0, 0],
   floor: false,
   gravity: 200,
+  seconds: 0,
   startTime: 0,
   task: -1,
   time: 0,
@@ -42,9 +45,20 @@ Simulation = {
   secondsElapsed: function() {
     return this.time - this.seconds;
   },
+  saveImage: function() {
+    if(this._a == null) this._a = document.createElement("a");
+    this._a.download = "sec_" + this.time + ".png";
+    this._a.href = this.context.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+    this._a.click();
+  },
   tick: function() {
     this.time = Simulation.elapsed() / 1000;
     var elapsed = Simulation.secondsElapsed();
+
+    if(this.elapsed >= 1) {
+      this.seconds++;
+      if(this.exportGif && (this.seconds >= this.gifRange[0] && this.seconds <= this.gifRange[1])) this.saveImage();
+    }
 
     if(Scene.balls.length > 0 || Scene.ramps.length > 0) this.context.clearRect(0, 0, 640, 320);
 
