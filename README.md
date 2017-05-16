@@ -1,2 +1,2 @@
-# Psych Demo
-Quick site/program made to play my video for the lucid dreaming project in intervals.
+# Assorted Stuff
+Random projects and programs.
