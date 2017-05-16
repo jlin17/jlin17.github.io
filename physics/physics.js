@@ -53,12 +53,11 @@ Simulation = {
   },
   tick: function() {
     this.time = Simulation.elapsed() / 1000;
-    var elapsed = Simulation.secondsElapsed();
 
-    if(elapsed >= 1) {
-      this.seconds++;
-      if(this.exportGif && (this.seconds >= this.gifRange[0] && this.seconds <= this.gifRange[1])) this.saveImage();
-    }
+    if(this.exportGif && (this.seconds >= this.gifRange[0] && this.seconds <= this.gifRange[1])) this.saveImage();
+
+    var elapsed = Simulation.secondsElapsed();
+    if(elapsed >= 1) this.seconds++;
 
     if(Scene.balls.length > 0 || Scene.ramps.length > 0) this.context.clearRect(0, 0, 640, 320);
 
