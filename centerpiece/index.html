@@ -1,0 +1,43 @@
+<html>
+<head>
+  <title>Centerpiece</title>
+</head>
+<style>
+  body {
+    background-color: black;
+  }
+
+  canvas#canvas {
+    background-color: #222;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+</style>
+<body>
+  <canvas id="canvas" width="400" height="618" />
+</body>
+<script>
+  var context = document.getElementById("canvas").getContext("2d");
+
+  var IMAGE_X = 0;
+  var centerpiece = new Image();
+  centerpiece.src = "Centerpiece.png";
+  centerpiece.addEventListener("load", drawCenter);
+
+  function drawCenter() {
+    context.drawImage(centerpiece, IMAGE_X, 0, 800, 618);
+  }
+
+  document.onkeydown = function(e) {
+    if (e.code == "ArrowLeft") {
+      if(IMAGE_X < 0) IMAGE_X += 10;
+      drawCenter();
+    } else if (e.code == "ArrowRight") {
+      if(IMAGE_X >= -380) IMAGE_X -= 10;
+      drawCenter();
+    }
+  };
+</script>
+</html>
