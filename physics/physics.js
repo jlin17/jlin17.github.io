@@ -1,3 +1,6 @@
+SPLIT_URI = window.location.toString().split("?"); WIREFRAME = false;
+if(SPLIT_URI.length >= 2 && SPLIT_URI[1].indexOf("wire") != -1) WIREFRAME = true;
+
 CLANG = new Howl({
   src: ['clang.mp3']
 });
@@ -13,9 +16,9 @@ BALL_IMAGE.src = "ball.png";
 BALL_SIZE = 40;
 
 RAMP_IMAGE = new Image();
-RAMP_IMAGE.src = "ramp.png";
+RAMP_IMAGE.src = (WIREFRAME) ? "ramp_wire.png" : "ramp.png";
 RAMP_FLIPPED_IMAGE = new Image();
-RAMP_FLIPPED_IMAGE.src = "ramp_flipped.png";
+RAMP_FLIPPED_IMAGE.src = (WIREFRAME) ? "ramp_flipped_wire.png" : "ramp_flipped.png";
 RAMP_SIZE = 64;
 
 Simulation = {
@@ -37,7 +40,8 @@ Simulation = {
     else CLANG.volume(0);
   },
   background: function() {
-    this.context.drawImage(BG, 0, 0, Simulation.context.canvas.width, Simulation.context.canvas.height);
+    if(!WIREFRAME) this.context.drawImage(BG, 0, 0, Simulation.context.canvas.width, Simulation.context.canvas.height);
+    else if(this.context.canvas.style.backgroundColor != "white") this.context.canvas.style.backgroundColor = "white";
   },
   elapsed: function() {
     return new Date().getTime() - this.startTime;
