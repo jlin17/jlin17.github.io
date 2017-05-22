@@ -68,8 +68,9 @@ CHALLENGE_STARTED = false;
 function currentChallenge() {
   if(document.cookie != "") {
     CURRENT_CHALLENGE = parseInt(document.cookie.split("=")[1]);
+  } else {
+    CURRENT_CHALLENGE = 1;
   }
-  CURRENT_CHALLENGE = 1;
 }
 
 function setChallenge(index) {
