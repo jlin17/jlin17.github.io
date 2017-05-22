@@ -259,6 +259,17 @@ Simulation = {
     this.context.imageSmoothingEnabled = false;
   },
   start: function() {
+    if(CHALLENGE_STARTED) {
+      if(CHALLENGES[CURRENT_CHALLENGE].requirementsMet()) {
+        alert("You completed the challenge successfully! What a god!");
+        if(CURRENT_CHALLENGE < 4) CURRENT_CHALLENGE++;
+        setChallenge(CURRENT_CHALLENGE);
+      }
+      else {
+        alert("Oh no, you didn't make the challenge!");
+      }
+    }
+    
     this.startTime = new Date().getTime();
     this.task = setInterval(function() {
       Simulation.tick();
