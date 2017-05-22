@@ -253,13 +253,14 @@
 
     Challenges = {
       hide: function() {
-        $("#challenge-dialog").show().fadeOut(500);
+        $("#challenge-dialog").show().fadeOut(500, function() {
+          $("button#challenge-start").text("Continue Challenge");
+          $("button#challenge-start").attr("class", "continue");
+        });
       },
       start: function() {
         Challenges.hide();
         CHALLENGE_STARTED = true;
-        $("button#challenge-start").text("Continue Challenge");
-        $("button#challenge-start").attr("class", "continue");
       },
       show: function() {
         loadChallenge(CURRENT_CHALLENGE);
