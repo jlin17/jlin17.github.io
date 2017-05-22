@@ -71,3 +71,7 @@ function currentChallenge() {
   }
   CURRENT_CHALLENGE = 1;
 }
+
+function setChallenge(index) {
+  document.cookie = "current=" + index;
+}
