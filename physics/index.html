@@ -211,7 +211,7 @@
       background-color: #81C784;
     }
     
-    button#challenge-start:disabled {
+    button#challenge-start.continue {
       background-color: #00838F;
     }
   </style>
@@ -259,7 +259,7 @@
         Challenges.hide();
         CHALLENGE_STARTED = true;
         $("button#challenge-start").text("Continue Challenge");
-        $("button#challenge-start").attr("disabled", "disabled");
+        $("button#challenge-start").attr("class", "continue");
       },
       show: function() {
         loadChallenge(CURRENT_CHALLENGE);
