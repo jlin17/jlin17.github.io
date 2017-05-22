@@ -2,6 +2,8 @@
   <head>
     <title>definitely physics</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
   </head>
   <style>
     body {
@@ -97,8 +99,131 @@
       width: 640px;
       image-rendering: pixelated;
     }
+
+    div#challenge-dialog {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100vh; width: 100vw;
+      z-index: 100;
+      display: none;
+    }
+
+    div#challenge-dialog .dialog-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.3);
+      box-shadow: inset 0px 0px 300px rgba(0, 0, 0, 0.4);
+    }
+
+    div#challenge-dialog .dialog {
+      position: absolute;
+      width: 700px;
+      height: 380px;
+      background-color: white;
+      z-index: 200;
+      box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.4);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    #challenge-title {
+      display: block;
+      background-color: #bbb;
+      border-bottom: 1px solid #888;
+      position: relative;
+      padding: 15px;
+      font-family: "Rubik", "Impact", sans-serif;
+      font-size: 20pt;
+      color: #E65100;
+      text-shadow: 0px -1px 0px #FFAB91, 0px 1px 2px rgba(0, 0, 0, 0.8);
+      box-shadow: 0px 1px 2px grey;
+      border-top: 1px solid #eee;
+      font-variant: small-caps;
+    }
+
+    #dialog-content {
+      padding: 20px;
+    }
+
+    img.challenge-thumb {
+      box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.5);
+      height: 150px;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      border-radius: 2px;
+    }
+
+    #dialog-content {
+      overflow-y: auto;
+    }
+
+    div#content-right {
+      width: 40%;
+      border-left: 1px solid #999;
+      padding-left: 40px;
+      font-family: "Dosis", sans-serif;
+      position: absolute;
+      right: 0;
+      overflow-y: scroll;
+      max-height: 60%;
+    }
+
+    div#content-right b {
+      display: block;
+      font-variant: small-caps;
+      margin: 15px 0px;
+      font-size: 20pt;
+    }
+
+    div#content-right p {
+      display: block;
+    }
+
+    ol {
+      padding-left: 20px;
+    }
+
+    li {
+      padding-left: 10px;
+    }
+
+    button#challenge-start {
+      position: absolute;
+      bottom: 0px;
+      width: 100%;
+      padding: 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      font-variant: small-caps;
+      font-weight: bold;
+      font-size: 15pt;
+      text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+    }
+
+    button#challenge-start:hover {
+      background-color: #81C784;
+    }
   </style>
   <body onload="document.getElementById('input').focus()">
+    <div id="challenge-dialog">
+      <div class="dialog-bg"></div>
+      <div class="dialog">
+        <span id="challenge-title">Challenge <em>1</em></span>
+        <div id="dialog-content">
+          <img src="challenges/1.png" class="challenge-thumb" />
+          <div id="content-right">
+          </div>
+        </div>
+        <button id="challenge-start" onclick="Challenges.start();">Start Challenge</button>
+      </div>
+    </div>
     <div id="square-container">
       <canvas id="square"></div>
     </div>
@@ -112,7 +237,9 @@
   <script src="howler.core.js"></script>
   <script src="jquery-3.2.1.min.js"></script>
   <script src="physics.js"></script>
+  <script src="challenges.js"></script>
   <script>
+    currentChallenge();
     var canvas = document.getElementById("square");
     var error = document.getElementById("error");
     var input = document.getElementById("input");
@@ -120,8 +247,23 @@
     var $output = $(output);
     var lastEntry;
 
+    Challenges = {
+      hide: function() {
+        $("#challenge-dialog").show().fadeOut(500);
+      },
+      start: function() {
+        Challenges.hide();
+        CHALLENGE_STARTED = true;
+      },
+      show: function() {
+        loadChallenge(CURRENT_CHALLENGE);
+        $("#challenge-dialog").hide().fadeIn(1000);
+      }
+    }
+
     $(function() {
       $("#square-container").hide().fadeIn(1000);
+      loadChallenge(CURRENT_CHALLENGE);
 
       scaleOutput();
       $(window).resize(function() {
@@ -167,8 +309,15 @@
       }
     }
 
+    function loadChallenge(index) {
+      $("#challenge-title").text("Challenge " + index);
+      $(".challenge-thumb").attr("src", "challenges/" + index + ".png");
+      $("#content-right").html(CHALLENGES[index].toHTML());
+    }
+
     function scaleOutput() {
       $(output).height($("#code").height() - input.clientHeight - 20);
+      $("#dialog-content").height($(".dialog").height() - $("#challenge-title").get(0).clientHeight - 2 - 40);
     }
 
     function showError(str) {

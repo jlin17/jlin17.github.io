@@ -21,6 +21,120 @@ RAMP_FLIPPED_IMAGE = new Image();
 RAMP_FLIPPED_IMAGE.src = (WIREFRAME) ? "ramp_flipped_wire.png" : "ramp_flipped.png";
 RAMP_SIZE = 64;
 
+Challenge = function(ballReqs, rampReqs) {
+  this.ballReqs = ballReqs;
+  this.rampReqs = rampReqs;
+}
+
+Challenge.prototype = {
+  get hasBallReqs() {
+    return this.ballReqs != null && this.ballReqs.length > 0;
+  },
+  get hasRampReqs() {
+    return this.rampReqs != null && this.rampReqs.length > 0;
+  },
+  requirementsMet: function() {
+    if(this.hasBallReqs) {
+      if(Scene.balls.length > 0) {
+        for(var i = 0; i < this.ballReqs.length; i++) {
+          var ballReq = this.ballReqs[i];
+          for(var j = 0; j < Scene.balls.length; j++) {
+            if(ballReq.meets(Scene.balls[j])) ballReq.met = true;
+          }
+        }
+      }
+    }
+
+    if(this.hasRampReqs) {
+      if(Scene.ramps.length > 0) {
+        for(var i = 0; i < this.rampReqs.length; i++) {
+          var rampReq = this.rampReqs[i];
+          for(var j = 0; j < Scene.ramps.length; j++) {
+            if(rampReq.meets(Scene.ramps[j])) rampReq.met = true;
+          }
+        }
+      }
+    }
+
+    return !this.unmetBalls() && !this.unmetRamps();
+  },
+  toHTML: function() {
+    var html = "";
+
+    if(this.hasBallReqs) {
+      html += "<b>Balls</b>";
+      html += "<ol>";
+      for(var i = 0; i < this.ballReqs.length; i++) {
+        html += "<li>";
+        html += this.ballReqs[i].toHTML();
+        html += "</li>";
+      }
+      html += "</ol>";
+    }
+
+    if(this.hasRampReqs) {
+      html += "<b>Ramps</b>";
+      html += "<ol>";
+      for(var i = 0; i < this.rampReqs.length; i++) {
+        html += "<li>";
+        html += this.rampReqs[i].toHTML();
+        html += "</li>";
+      }
+      html += "</ol>";
+    }
+
+    return html;
+  },
+  unmetBalls: function() {
+    if(this.hasBallReqs) {
+      for(var i = 0; i < this.ballReqs.length; i++) {
+        if(!this.ballReqs[i].met) return true;
+      }
+    }
+    return false;
+  },
+  unmetRamps: function() {
+    if(this.hasRampReqs) {
+      for(var i = 0; i < this.rampReqs.length; i++) {
+        if(!this.rampReqs[i].met) return true;
+      }
+    }
+    return false;
+  }
+}
+
+Requirement = function() {
+  this.met = false;
+  this.properties = {};
+}
+
+Requirement.prototype = {
+  meets: function(obj) {
+    var reqKeys = Object.keys(this.properties);
+    if(reqKeys.length > 0) {
+      for(var i = 0; i < reqKeys.length; i++) {
+        var reqKey = reqKeys[i];
+        if(this.properties[reqKey] != obj[reqKey]) return false;
+      }
+    }
+    return true;
+  },
+  toHTML: function() {
+    var html = "";
+    var reqKeys = Object.keys(this.properties);
+
+    if(reqKeys.length > 0) {
+      for(var i = 0; i < reqKeys.length; i++) {
+        var reqKey = reqKeys[i];
+        var reqString = "<p>" + reqKey + ": " + this.properties[reqKey] + "</p>";
+        html += reqString;
+      }
+    }
+
+    return html;
+  }
+}
+
 Simulation = {
   context: {},
   exportGif: false,
