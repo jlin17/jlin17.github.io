@@ -1,0 +1,28 @@
+button {
+  display: block;
+  box-shadow: rgb(154, 204, 133) 0px 1px 0px 0px inset;
+  background: linear-gradient(rgb(116, 173, 90) 5%, rgb(104, 165, 75) 100%) rgb(116, 173, 90);
+  border: 1px solid rgb(59, 110, 34);
+  cursor: pointer;
+  color: rgb(255, 255, 255);
+  font-family: Arial;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 6px 12px;
+  text-decoration: none;
+  margin: 15px 0px;
+  outline: none;
+}
+
+button:active {
+  position: relative;
+  top: 1px;
+}
+
+img {
+  max-width: 100%;
+}
+
+.hidden {
+  display: none;
+}
