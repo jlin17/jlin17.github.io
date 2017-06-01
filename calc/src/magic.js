@@ -28,4 +28,5 @@ function parseContent(str) {
 function showContent(id) {
   var $elem = $("#content_" + id);
   if(!$elem.is(":visible")) $elem.hide().slideDown();
+  else $elem.show().slideUp();
 }
