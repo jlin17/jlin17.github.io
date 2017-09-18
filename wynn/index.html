@@ -1,0 +1,1119 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Author" content="htmlman1">
+  <meta name="Keywords" content="gm wynncraft lol have fun reading these tags">
+  <meta name="Description" content="A set of tools for the GMs of Wynncraft (or mainly me, since katoa.ca is much more likely to be used)">
+  <link href='http://fonts.googleapis.com/css?family=Slabo+27px' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Lora' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,700' rel='stylesheet' type='text/css'>
+  <link rel="shortcut icon" href="https://wynncraft.com/assets/img/favicon.ico"/>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="assets/js/jquery-ui-1.11.3.custom/jquery-ui.min.js"></script>
+  <link href='assets/js/jquery-ui-1.11.3.custom/jquery-ui.min.css' rel='stylesheet' type='text/css'>
+  <title>The WynnBin | Quest Generator</title>
+  <link rel="stylesheet" href="assets/style/reset.css" />
+ </head>
+ <script type="text/javascript">
+ <!--
+	// Image precaching
+
+	precache(
+		"assets/img/villager/farmer.png",
+		"assets/img/villager/blacksmith.png",
+		"assets/img/villager/librarian.png",
+		"assets/img/villager/butcher.png",
+		"assets/img/villager/priest.png",
+		"assets/img/regions.png"
+	);
+
+	// Event Handlers
+	$("html").click( function(event) {
+		var clicked = $(event.target);
+		clicked.siblings(".quest_npc_type").prop("checked", false);
+	});
+
+	// ------------------
+
+	function init() {
+		$(function() {
+			$(".spinner").spinner({
+				min: 1,
+				max: 999
+			});
+		});
+	}
+
+	function precache() {
+		var imgcache = new Array();
+		for (i = 0; i < precache.arguments.length; i++) {
+			imgcache[i] = new Image();
+			imgcache[i].src = precache.arguments[i];
+		}
+	}
+
+	function addElement(type, elem) {
+		var reference = $(elem);
+
+		switch (type)
+		{
+		case "stage":
+			var parentlist = reference.parents("ol#queststages");
+
+			parentlist.find(".add").remove();
+			parentlist.find(".remove").remove();
+
+			parentlist.append(
+				"<li><input type='text' class='quest_stage' size ='40' /><a onclick='addElement(" +
+				'"stage"' +
+				", this);' class='add'>+</a><a onclick='removeElement(" +
+				'"stage"' +
+				", this);' class='remove'>-</a></li>"
+			);
+			break;
+		case "smessage":
+			var parentlist = reference.parents("ul#successmessages");
+
+			parentlist.find(".add").remove();
+			parentlist.find(".remove").remove();
+
+			parentlist.append(
+				"<li><input type='text' class='quest_success' size ='40' /><a onclick='addElement(" +
+				'"smessage"' +
+				", this);' class='add'>+</a><a onclick='removeElement(" +
+				'"smessage"' +
+				", this);' class='remove'>-</a></li>"
+			);
+			break;
+		case "npc":
+			var parentlist = $("div#npc_container");
+
+			if(!reference.next("a.remove").length) {
+				reference.after("<a onclick='removeElement(" + '"npc"' + ", this);' class='remove'>-</a></li>");
+			}
+
+			parentlist.append(
+				"<div class='npc' title='Click to edit' onclick='openNPCInfoDialog(this)'>" +
+								"<span>Bob the Pony</span>" +
+								"<div class='infodialog' title='NPC Info: Bob the Pony' style='display: none'>" +
+									"<b>General Information:</b><br />" +
+									"Name: <input type='text' class='quest_npc_name' /><br />" +
+									"Location:" +
+									"<p class='dialog-list'>" +
+										"X: <input type='text' class='quest_npc_x' size='1'><br />" +
+										"Y: <input type='text' class='quest_npc_y' size='1'><br />" +
+										"Z: <input type='text' class='quest_npc_z' size='1'><br />" +
+									"</p>" +
+									"Occupation:" +
+									"<p class='dialog-list'>" +
+										"<input type='radio' class='quest_npc_type' value='farmer' checked='checked'> Farmer" +
+										"<input type='radio' class='quest_npc_type' value='blacksmith'> Blacksmith" +
+										"<input type='radio' class='quest_npc_type' value='butcher'> Butcher" +
+										"<input type='radio' class='quest_npc_type' value='librarian'> Librarian" +
+										"<input type='radio' class='quest_npc_type' value='priest'> Priest" +
+									"</p>" +
+									"Is the villager a baby? <input type='checkbox' class='quest_npc_baby'><br />" +
+									"<b>Stage Dialogue:</b>" +
+									"<p class='dialog-list'>" +
+										"<ul class='npcdialog'>" +
+											"<li>" +
+												"Stage <input class='quest_npc_stage spinner' size='3' />:&nbsp;&nbsp;" +
+												"<input type='text' class='quest_npc_cont' size='40' />" +
+												"<a onclick='addElement(" + '"npcdialogue"' + ", this)' class='add'>+</a>" +
+											"</li>" +
+										"</ul>" +
+									"</p>" +
+									"<b>Other Messages</b>" +
+									"<p class='dialog-list'>" +
+									"Low-stage message: <input type='text' class='quest_npc_lowlevel' /><br />" +
+									"Low-level message: <input type='text' class='quest_npc_lowlevel' /><br />" +
+									"Repeat message: <input type='text' class='quest_npc_repeat' /><br />" +
+									"Fallback message: <input type='text' class='quest_npc_fallback' /><br />" +
+									"Greeting message: <input type='text' class='quest_npc_greeting' />" +
+									"</p>" +
+									"<b>Requirements</b> <input type='checkbox' class='quest_has_reqs' onclick='toggleReq(this)' />" +
+									"<ul class='quest_reqs' style='display: none'>" +
+										"<li>" +
+											"Stage <input class='quest_req_stage spinner' size='3' /><br />" +
+												"X: <input type='text' class='quest_req_x' size='1' />" +
+												"Y: <input type='text' class='quest_req_y' size='1' />" +
+												"Z: <input type='text' class='quest_req_z' size='1' />" +
+											"<a onclick='addElement(" + '"requirement"' + ", this)' class='add'>+</a>" +
+										"</li>" +
+									"</ul>" +
+									"<br />" +
+									"<b>Rewards</b> <input type='checkbox' class='quest_has_rew' onclick='toggleRew(this)' />" +
+									"<ul class='quest_rewards' style='display: none'>" +
+										"<li>" +
+											"Stage <input class='quest_rew_stage spinner' size='3' /><br />" +
+												"X: <input type='text' class='quest_rew_x' size='1' />" +
+												"Y: <input type='text' class='quest_rew_y' size='1' />" +
+												"Z: <input type='text' class='quest_rew_z' size='1' />" +
+											"<a onclick='addElement(" + '"reward"' + ", this)' class='add'>+</a>" +
+										"</li>" +
+									"</ul>" +
+								"</div>" +
+							"</div>"
+			);
+
+			init();
+			break;
+		case "npcdialogue":
+			var parentlist = reference.parents("ul.npcdialog");
+
+			parentlist.find(".add").remove();
+			parentlist.find(".remove").remove();
+
+			parentlist.append(
+				"<li>Stage <input class='quest_npc_stage spinner' size='3' />:&nbsp;&nbsp;<input type='text' class='quest_npc_cont' size='40' />" +
+					"<a onclick='addElement(" + '"npcdialogue"' + ", this)' class='add'>+</a>" +
+					"<a onclick='removeElement(" + '"npcdialogue"' + ", this)' class='remove'>-</a></li>"
+			);
+
+			init();
+			break;
+		case "requirement":
+			var parentlist = reference.parents("ul.quest_reqs");
+
+			parentlist.find(".add").remove();
+			parentlist.find(".remove").remove();
+
+
+			parentlist.append(
+				"<li>Stage <input class='quest_req_stage spinner' size='3' /><br />X: <input type='text' class='quest_req_x' size='1' />" +
+					"Y: <input type='text' class='quest_req_y' size='1' />Z: <input type='text' class='quest_req_z' size='1' />" +
+					"<a onclick='addElement(" + '"requirement"' + ", this)' class='add'>+</a>" +
+					"<a onclick='removeElement(" + '"requirement"' + ", this)' class='remove'>-</a></li>"
+			);
+
+			init();
+			break;
+		case "reward":
+			var parentlist = reference.parents("ul.quest_rewards");
+
+			parentlist.find(".add").remove();
+			parentlist.find(".remove").remove();
+
+			parentlist.append("<li>Stage <input class='quest_rew_stage spinner' size='3' /><br />X: <input type='text' class='quest_rew_x' size='1' />" +
+					"Y: <input type='text' class='quest_rew_y' size='1' />" +
+					"Z: <input type='text' class='quest_rew_z' size='1' />" +
+					"<a onclick='addElement(" + '"reward"' + ", this)' class='add'>+</a>" +
+					"<a onclick='removeElement(" + '"reward"' + ", this)' class='remove'>-</a></li>"
+			);
+
+			init();
+			break;
+		case "region":
+			var parentlist = $("div#region_container");
+
+			if(!reference.next("a.remove").length) {
+				reference.after("<a onclick='removeElement(" + '"region"' + ", this);' class='remove'>-</a></li>");
+			}
+
+			parentlist.append("<div class='region' title='Click to edit' onclick='openRegionInfoDialog(this)'><span>Region1</span>" +
+						"<div class='infodialog' title='Region Info: Region1' style='display: none'><b>General Information</b><br />" +
+							"Unique ID: <input type='text' class='region_name' /><br />Corner 1:<p class='dialog-list'>" +
+								"X: <input type='text' class='region_x1' size='3' /><br />Y: <input type='text' class='region_y1' size='3' /><br />" +
+								"Z: <input type='text' class='region_z1' size='3' /><br /></p>Corner 2:<p class='dialog-list'>" +
+								"X: <input type='text' class='region_x2' size='3' /><br />Y: <input type='text' class='region_y2' size='3' /><br />" +
+								"Z: <input type='text' class='region_z2' size='3' /><br /></p>" +
+							"<input type='checkbox' class='region_escstage'> Escalates stage<br /><hr /><b>Entry Details</b><br />" +
+							"Minimum stage: <input class='region_min_stage spinner' size='3' /><br />" +
+							"Item required: <input type='checkbox' class='item_required' onclick='toggleItemReq(this)' />" +
+							"<p class='region_item_req dialog-list' style='display: none'>X: <input type='text' class='region_item_x' size='3' /><br />" +
+								"Y: <input type='text' class='region_item_y' size='3' /><br />Z: <input type='text' class='region_item_z' size='3' /><br /> " +
+							"</p><br />Teleport: <input type='checkbox' class='has_tp' onclick='toggleRegionTp(this)' />" +
+							"<p class='region_tp dialog-list' style='display: none'>X: <input type='text' class='region_tp_x' size='3' /><br />" +
+								"Y: <input type='text' class='region_tp_y' size='3' /><br />Z: <input type='text' class='region_tp_z' size='3' /><br /> " +
+							"</p><br /><hr /><b>Messages</b><br />Denial message: <input type='text' class='region_denial_message' size='43' /><br />" +
+							"Stage set message: <input type='text' class='region_stage_message' size='43' /></div></div>"
+			);
+
+			init();
+			break;
+		}
+	}
+
+	function removeElement(type, elem) {
+		var reference = $(elem);
+
+		switch (type)
+		{
+		case "stage":
+			var parentlist = reference.parents("ol#queststages");
+			var target = reference.parent("li");
+			var childrenamt = parentlist.children("li").length;
+
+			target.prev().append("<a onclick='addElement(" + '"stage"' + ", this)' class='add'>+</a>");
+
+			if(childrenamt > 2) {
+				target.prev().append("<a onclick='removeElement(" + '"stage"' + ", this)' class='remove'>-</a>");
+			}
+
+			target.remove();
+			break;
+		case "smessage":
+			var parentlist = reference.parents("ul#successmessages");
+			var target = reference.parent("li");
+			var childrenamt = parentlist.children("li").length;
+
+			target.prev().append("<a onclick='addElement(" + '"smessage"' + ", this)' class='add'>+</a>");
+
+			if(childrenamt > 2) {
+				target.prev().append("<a onclick='removeElement(" + '"smessage"' + ", this)' class='remove'>-</a>");
+			}
+
+			target.remove();
+			break;
+		case "npc":
+			var parentlist = reference.parents("div#questnpcs").find("div#npc_container");
+			var target = parentlist.children("div.npc").last();
+			target.remove();
+
+			var childrenamt = parentlist.children("div.npc").length;
+
+			if((childrenamt) <= 1) {
+				$("div#buttons .remove").remove();
+			}
+			break;
+		case "npcdialogue":
+			var parentlist = reference.parents("ul.npcdialog");
+			var target = reference.parent("li");
+			var childrenamt = parentlist.children("li").length;
+
+			target.prev().append("<a onclick='addElement(" + '"npcdialogue"' + ", this)' class='add'>+</a>");
+
+			if(childrenamt > 2) {
+				target.prev().append("<a onclick='removeElement(" + '"npcdialogue"' + ", this)' class='remove'>-</a>");
+			}
+
+			target.remove();
+			break;
+		case "requirement":
+			var parentlist = reference.parents("ul.quest_reqs");
+			var target = reference.parent("li");
+			var childrenamt = parentlist.children("li").length;
+
+			target.prev().append("<a onclick='addElement(" + '"requirement"' + ", this)' class='add'>+</a>");
+
+			if(childrenamt > 2) {
+				target.prev().append("<a onclick='removeElement(" + '"requirement"' + ", this)' class='remove'>-</a>");
+			}
+
+			target.remove();
+			break;
+		case "reward":
+			var parentlist = reference.parents("ul.quest_rewards");
+			var target = reference.parent("li");
+			var childrenamt = parentlist.children("li").length;
+
+			target.prev().append("<a onclick='addElement(" + '"reward"' + ", this)' class='add'>+</a>");
+
+			if(childrenamt > 2) {
+				target.prev().append("<a onclick='removeElement(" + '"reward"' + ", this)' class='remove'>-</a>");
+			}
+
+			target.remove();
+			break;
+		case "region":
+			var parentlist = reference.parents("div#region_container");
+			var target = parentlist.children("div.region").last();
+			target.remove();
+
+			var childrenamt = parentlist.children("div.region").length;
+
+			if((childrenamt) <= 1) {
+				$("div#reg_buttons .remove").remove();
+			}
+			break;
+		}
+	}
+
+	function toggleRew(elem) {
+		var reference = $(elem);
+		var target = reference.next(".quest_rewards");
+
+		if(target.is(":hidden")) {
+			target.show();
+		} else {
+			target.hide();
+		}
+	}
+
+	function toggleReq(elem) {
+		var reference = $(elem);
+		var target = reference.next(".quest_reqs");
+
+		if(target.is(":hidden")) {
+			target.show();
+		} else {
+			target.hide();
+		}
+	}
+
+	function toggleRegions() {
+		var regions = $("div#region_container");
+
+		if(regions.is(":hidden")) {
+			regions.show();
+		} else {
+			regions.hide();
+		}
+	}
+
+	function toggleItemReq(elem) {
+		var itemform = $(elem).siblings("p.region_item_req");
+
+		if(itemform.is(":hidden")) {
+			itemform.show();
+		} else {
+			itemform.hide();
+		}
+	}
+
+	function toggleRegionTp(elem) {
+		var itemform = $(elem).siblings("p.region_tp");
+
+		if(itemform.is(":hidden")) {
+			itemform.show();
+		} else {
+			itemform.hide();
+		}
+	}
+
+	function openNPCInfoDialog(elem) {
+		var reference = $(elem);
+
+		var dialog = reference.find(".infodialog");
+
+		dialog.dialog({
+				dialogClass: "no-close",
+				resizable: true,
+				modal: true,
+				autoOpen: false,
+				height: 480,
+				width: 780,
+				buttons: {
+					"Done": function() {
+						$( this ).dialog( "destroy" );
+						updateNPCTile(this);
+					},
+					Cancel: function() {
+						$( this ).dialog( "destroy" );
+					}
+				}
+		});
+
+		dialog.dialog( "open" );
+	}
+
+	function openRegionInfoDialog(elem) {
+		var reference = $(elem);
+
+		var dialog = reference.find(".infodialog");
+
+		dialog.dialog({
+				dialogClass: "no-close",
+				resizable: true,
+				modal: true,
+				autoOpen: false,
+				height: 480,
+				width: 780,
+				buttons: {
+					"Done": function() {
+						$( this ).dialog( "destroy" );
+						// updateNPCTile(this);
+					},
+					Cancel: function() {
+						$( this ).dialog( "destroy" );
+					}
+				}
+		});
+
+		dialog.dialog( "open" );
+	}
+
+	function updateNPCTile(dialog) {
+		// Image update
+		var tile = $(dialog).parents(".npc");
+		var selectedtype = tile.find(".quest_npc_type").filter(":checked").val();
+
+		tile.css("background-image", "url('assets/img/villager/" + selectedtype + ".png')");
+
+		// Text update
+		var name = $(dialog).find(".quest_npc_name").val();
+		tile.find("span").text(name);
+		tile.find(".infodialog").attr("title", "NPC Info: " + name);
+	}
+
+	// Basic data structures
+
+	function yamlParser(string) {
+		this.content = (string == null) ? "" : string;
+
+		this.overwrite = function(n) {
+			this.content = n;
+		}
+
+		this.append = function(n) {
+			this.content += n;
+		}
+
+		this.newline = function(n) {
+			this.content += "\n\r";
+			this.content += n;
+		}
+
+		this.getContent = function() {
+			return decodeURI(this.content);
+		}
+	}
+
+		function NPC(name, coords, occupation, isBaby, fallback, repeat, greet, lowstage, lowlevel, stagemessages, requirements, rewards) {
+		this.name = name;
+		this.coords = coords;
+		this.occupation = occupation;
+		this.isBaby = isBaby;
+		this.fallback = fallback;
+		this.repeat = repeat;
+		this.greet = greet;
+		this.lowstage = lowstage;
+		this.lowlevel = lowlevel;
+		this.stagemessages = stagemessages;
+		this.requirements = requirements;
+		this.rewards = rewards;
+	}
+
+	function Region(name, loc1, loc2, dmessage, stageRequired, itemsRequired, tp, willEscalate, stageSet) {
+		this.name = name;
+		this.loc1 = loc1;
+		this.loc2 = loc2;
+		this.dmessage = dmessage;
+		this.stageRequired = stageRequired;
+		this.itemsRequired = itemsRequired;
+		this.tp = tp;
+		this.willEscalate = willEscalate;
+		this.stageSet = stageSet;
+	}
+
+	function validateForm(elem) {
+		var form = $("form#questform");
+		processForm(form);
+	}
+
+	function processForm(elem) {
+		var form = $(elem);
+
+		// Concrete data
+
+		var questname = $("input[name='questname']").val();
+		var minlevel = $("input[name='quest_minlevel']").val();
+		var xp = $("input[name='quest_xp']").val();
+
+		// For data with variable fields...
+
+		var stage_number = $("ol#queststages").find("li").length;
+		var npc_number = $("div#npc_container").find("div.npc").length;
+		var region_number = $("div#region_container").find("div.region").length;
+		var success_messages = $("ul.successmessages").find("li").length;
+
+		// Process variable data
+
+		var stages = new Array();
+		var successmessages = new Array();
+		var npcs = new Array();
+		var regions = new Array();
+
+		$("ol#queststages").find("li").find("input.quest_stage").each(function(i) {
+			stages.push($(this).val());
+		});
+
+		$("ul.successmessages").find("li").find("input.quest_success").each(function(i) {
+			successmessages.push($(this).val());
+		});
+
+		// NPCs
+
+		$("div#npc_container").find("div.npc").each(function(i) {
+			var npcblock = $(this);
+			var name = npcblock.find("span").text();
+				var x = npcblock.find(".quest_npc_x").val();
+				var y = npcblock.find(".quest_npc_x").val();
+				var z = npcblock.find(".quest_npc_x").val();
+			var coords = x.toString() + "," + y.toString() + "," + z.toString();
+			var occupation = npcblock.find(".quest_npc_type").filter(":checked").val();
+			var isBaby = npcblock.find(".quest_npc_baby").is(":checked");
+			var fallback = npcblock.find(".quest_npc_fallback").val();
+			var repeat = npcblock.find(".quest_npc_repeat").val();
+			var greet = npcblock.find(".quest_npc_greet").val();
+			var lowlevel = npcblock.find(".quest_npc_lowlevel").val();
+			var lowstage = npcblock.find(".quest_npc_lowstage").val();
+
+			var stagemessages = new Array();
+			var requirements = new Array();
+			var rewards = new Array();
+
+			npcblock.find("ul.npcdialog").find("li").each(function(i) {
+				var key = $(this).find(".quest_npc_stage").val();
+				var value = $(this).find(".quest_npc_cont").val();
+
+				stagemessages.push(key.toString() + ": " + value.toString());
+			});
+
+			npcblock.find("ul.quest_reqs").find("li").each(function(i) {
+				var key = $(this).find(".quest_req_stage").val();
+				var value_x = $(this).find(".quest_req_x").val();
+				var value_y = $(this).find(".quest_req_y").val();
+				var value_z = $(this).find(".quest_req_z").val();
+
+				requirements.push(key.toString() + ": " + value_x.toString() + "," + value_y.toString() + "," + value_z.toString());
+			});
+
+			npcblock.find("ul.quest_rewards").find("li").each(function(i) {
+				var key = $(this).find(".quest_rew_stage").val();
+				var value_x = $(this).find(".quest_rew_x").val();
+				var value_y = $(this).find(".quest_rew_y").val();
+				var value_z = $(this).find(".quest_rew_z").val();
+
+				requirements.push(key.toString() + ": " + value_x.toString() + "," + value_y.toString() + "," + value_z.toString());
+			});
+
+			var npc = new NPC(name, coords, occupation, isBaby, fallback, repeat, greet, lowstage, lowlevel, stagemessages, requirements, rewards);
+
+			npcs.push(npc);
+		});
+
+		// Regions
+
+		$("div#region_container").find("div.region").each(function(i) {
+			var regionblock = $(this);
+			var name = regionblock.find(".region_name").val();
+				var x1 = regionblock.find(".region_x1").val();
+				var y1 = regionblock.find(".region_y1").val();
+				var z1 = regionblock.find(".region_z1").val();
+			var loc1 = x1.toString() + "," + y1.toString() + "," + z1.toString();
+				var x2 = regionblock.find(".region_x2").val();
+				var y2 = regionblock.find(".region_y2").val();
+				var z2 = regionblock.find(".region_z2").val();
+			var loc2 = x2.toString() + "," + y2.toString() + "," + z2.toString();
+			var dmessage = regionblock.find(".region_denial_message").val();
+			var stageRequired = regionblock.find(".region_min_stage").val();
+				var ix = regionblock.find(".region_item_req").find(".region_item_x").val();
+				var iy = regionblock.find(".region_item_req").find(".region_item_y").val();
+				var iz = regionblock.find(".region_item_req").find(".region_item_z").val();
+			var itemsRequired = ix.toString() + "," + iy.toString() + "," + iz.toString();
+			var hasTp = regionblock.find(".has_tp").is(":checked");
+				var tpx = regionblock.find(".region_tp_x").val();
+				var tpy = regionblock.find(".region_tp_y").val();
+				var tpz = regionblock.find(".region_tp_z").val();
+			var tp = (hasTp) ? (tpx.toString() + "," + tpy.toString() + "," + tpz.toString()) : "null";
+			var willEscalate = regionblock.find(".region_escstage").is(":checked");
+			var stageSet = regionblock.find(".region_stage_message").val();
+
+			var region = new Region(name, loc1, loc2, dmessage, stageRequired, itemsRequired, tp, willEscalate, stageSet);
+
+			regions.push(region);
+		});
+
+		generateQuest(questname, minlevel, xp, stages, successmessages, npcs, regions);
+	}
+
+	function generateQuest(questname, minlevel, xp, stages, successmessages, npcs, regions) {
+
+	}
+ //-->
+ </script>
+ <style type="text/css">
+	body {
+	  background-color: black;
+	  background-image: url("assets/style/bg/detlas.png");
+	  background-size: 100% 100%;
+	  background-repeat: no-repeat;
+	  overflow: hidden;
+	}
+	div {
+	  color: white;
+	  text-align: center;
+	}
+
+	div#sidebar {
+	  -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+	  background-color: rgba(0, 0, 0, 0.6);
+	  height: inherit;
+	  width: 33%;
+	  min-width: 33%;
+	  height: 100vh;
+	  line-height: 100vh;
+	  float: left;
+	  display: table-cell;
+	}
+	div#sidebar span {
+	  display: inline-block;
+	  vertical-align: middle;
+	  line-height: normal;
+	}
+	div#sidebar > span > h1 {
+	  font-family: "Slabo 27px", serif;
+	  font-size: 20pt;
+	}
+	div#sidebar > span > sub {
+	  font-family: "Georgia", serif;
+	  font-size: 8pt;
+	  font-style: italic;
+	}
+	div#sidebar > div#footer {
+	  height: 50px;
+	  width: 100%;
+	  display: block;
+	  background-color: rgba(0, 0, 0, 0.4);
+	  font-size: 7pt;
+	  line-height: 8.2pt;
+	  font-family: "Arial", sans-serif;
+	  position: relative;
+	  bottom: 50px;
+	  left: 0;
+	  padding: 10px 15px 10px 15px;
+	}
+
+	div#gencontainer {
+	  background-color: transparent;
+	  height: 100vh;
+	  width: auto;
+	  font-size: 20pt;
+	  text-align: center;
+	  margin-left: 33%;
+	  position: relative;
+	}
+	div#gencontainer > span#menu {
+	  opacity: 70%;
+	  width: 89%;
+	  height: 93%;
+      margin: auto;
+	  position: absolute;
+	  top: 0; left: 0; bottom: 0; right: 0;
+	  background-color: white;
+	  background-image: url("assets/style/bg/log_oak.png");
+	  background-size: 80px 80px;
+	  background-repeat: repeat;
+	  display: inline-block;
+	  font-family: "Lora";
+	  text-align: left;
+	  color: black;
+	  box-shadow: 0px 0px 15px black;
+	  padding: 30px;
+	}
+
+	form#questform {
+	  overflow-y: auto;
+	  height: 100%;
+	  padding: 20px;
+	  background-color: white;
+	  box-shadow: inset 0px 0px 6px #555;
+	}
+	form#questform h1 {
+	  font-weight: 500;
+	  font-family: "Lora";
+	  font-size: 20pt;
+	  margin-bottom: 15px;
+	}
+	input[type=text] {
+	  outline: 0;
+	  font-size: 15pt;
+	  background-color: transparent;
+	  border: none;
+	  border-bottom: 1px dashed #999;
+	  font-family: "Cambria", "Georgia", serif;
+	  padding: 0px 5px;
+	  text-align: center;
+	  color: #444;
+	  box-shadow: none;
+	}
+	form#questform fieldset {
+	  border: none;
+	  padding: 8px 25px;
+	}
+	form#questform fieldset input, .ui-widget-content input {
+	  text-align: left !important;
+	  font-size: 13pt;
+	  margin: 10px 0px;
+	}
+	form#questform h3 {
+	  font-weight: normal;
+	  font-family: "Slabo 27px", serif;
+	  font-variant: small-caps;
+	  font-size: 17pt;
+	  margin-top: 15px;
+	  margin-bottom: 6px;
+	  padding-bottom: 6px;
+	  border-bottom: 1px dotted #aaa;
+	  width: 100%;
+	  display: inline-block;
+	}
+	form#questform > fieldset > label {
+	  font-family: "Lora", serif;
+	  font-size: 12pt;
+	  margin-top: 15px;
+	  margin-bottom: 6px;
+	  margin-right: 10px;
+	  font-weight: 600;
+	}
+	ol, ul {
+	  margin: 10px;
+	  padding-left: 2em;
+	}
+	ol li {
+	  font-family: "Lora", "Cambria", "Georgia", serif;
+	}
+
+	ul li {
+	  font-family: "Lora", "Cambria", "Georgia", serif;
+	}
+
+	input {
+	  outline: 0 !important;
+	}
+
+	.add {
+	-moz-box-shadow: 0px 11px 14px -7px #3e7327;
+	-webkit-box-shadow: 0px 11px 14px -7px #3e7327;
+	box-shadow: 1px 1px 3px #666;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #77b55a), color-stop(1, #72b352));
+	background:-moz-linear-gradient(top, #77b55a 5%, #72b352 100%);
+	background:-webkit-linear-gradient(top, #77b55a 5%, #72b352 100%);
+	background:-o-linear-gradient(top, #77b55a 5%, #72b352 100%);
+	background:-ms-linear-gradient(top, #77b55a 5%, #72b352 100%);
+	background:linear-gradient(to bottom, #77b55a 5%, #72b352 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#77b55a', endColorstr='#72b352',GradientType=0);
+	background-color:#77b55a;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+	border:1px solid #4b8f29;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff !important;
+	font-family:Courier New;
+	font-size:13px;
+	font-weight:bold;
+	padding:6px 11px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #5b8a3c;
+	margin: 5px 3px;
+}
+.add:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #72b352), color-stop(1, #77b55a));
+	background:-moz-linear-gradient(top, #72b352 5%, #77b55a 100%);
+	background:-webkit-linear-gradient(top, #72b352 5%, #77b55a 100%);
+	background:-o-linear-gradient(top, #72b352 5%, #77b55a 100%);
+	background:-ms-linear-gradient(top, #72b352 5%, #77b55a 100%);
+	background:linear-gradient(to bottom, #72b352 5%, #77b55a 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#72b352', endColorstr='#77b55a',GradientType=0);
+	background-color:#72b352;
+}
+.add:active {
+	position:relative;
+	top:1px;
+}
+.remove {
+	-moz-box-shadow: 0px 11px 14px -7px #732727;
+	-webkit-box-shadow: 0px 11px 14px -7px #732727;
+	box-shadow: 1px 1px 3px #666;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #b35959), color-stop(1, #b35252));
+	background:-moz-linear-gradient(top, #b35959 5%, #b35252 100%);
+	background:-webkit-linear-gradient(top, #b35959 5%, #b35252 100%);
+	background:-o-linear-gradient(top, #b35959 5%, #b35252 100%);
+	background:-ms-linear-gradient(top, #b35959 5%, #b35252 100%);
+	background:linear-gradient(to bottom, #b35959 5%, #b35252 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#b35959', endColorstr='#b35252',GradientType=0);
+	background-color:#b35959;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+	border:1px solid #8f2929;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff !important;
+	font-family:Courier New;
+	font-size:13px;
+	font-weight:bold;
+	padding:6px 11px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #8a3d3d;
+	margin: 5px 3px;
+}
+.remove:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #b35252), color-stop(1, #b35959));
+	background:-moz-linear-gradient(top, #b35252 5%, #b35959 100%);
+	background:-webkit-linear-gradient(top, #b35252 5%, #b35959 100%);
+	background:-o-linear-gradient(top, #b35252 5%, #b35959 100%);
+	background:-ms-linear-gradient(top, #b35252 5%, #b35959 100%);
+	background:linear-gradient(to bottom, #b35252 5%, #b35959 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#b35252', endColorstr='#b35959',GradientType=0);
+	background-color:#b35252;
+}
+.remove:active {
+	position:relative;
+	top:1px;
+}
+
+  hr {
+    border: none;
+    background-color: transparent;
+    height: 1px;
+    margin: 12px 0px;
+  }
+
+  .npc, .region {
+    border: 7px solid #eee;
+	box-shadow: 1px 1px 5px #222, inset 0px 0px 5px #333;
+	background-color: #444;
+	background-image: url("assets/img/villager/farmer.png");
+	background-size: 200px 200px;
+	height: 200px;
+	width: 200px;
+	display: inline-block;
+	margin: 10px 5px 10px 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	cursor: pointer;
+  }
+
+  .region {
+	background-image: url("assets/img/regions.png");
+  }
+
+  .npc span, .region span {
+    display: block;
+	color: white;
+	font-size: 10pt;
+	font-family: "Roboto Slab", "Lora", "Cambria", serif;
+	background-color: #333;
+	background-color: rgba(0, 0, 0, 0.7);
+	width: 100%;
+	padding: 5px 0px;
+	text-shadow: 1px 1px 2px black;
+	box-shadow: 0px 5px 5px -5px black;
+  }
+
+  .no-close .ui-dialog-titlebar-close {
+    display: none;
+  }
+
+  .ui-widget-content {
+    text-align: left;
+    font-family: "Lora", "Georgia", "Cambria", sans-serif;
+  }
+
+  p.dialog-list {
+    font-family: inherit;
+	font-size: 10pt;
+	padding-left: 10px;
+  }
+
+  b {
+    font: inherit;
+	font-weight: bold;
+  }
+
+.submit {
+	-moz-box-shadow:inset 0px 39px 0px -24px #9acc85, 2px 2px 5px #777;
+	-webkit-box-shadow:inset 0px 39px 0px -24px #9acc85, 2px 2px 5px #777;
+	box-shadow:inset 0px 39px 0px -24px #9acc85, 2px 2px 5px #777;
+	background-color:#74ad5a;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+	border:1px solid #3b6e22;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:arial;
+	font-size:17px;
+	font-weight:bold;
+	padding:6px 15px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #92b879;
+}
+.submit:hover {
+	background-color:#68a54b;
+}
+.submit:active {
+	position:relative;
+	top:1px;
+}
+
+ </style>
+ <body onload="init();">
+  <div id="sidebar">
+	<span>
+		<h1>The WynnBin: Quest Generator</h1>
+		<sub>Let's write some quests, yo!</sub>
+	</span>
+	<div id="footer">
+		Website designed and coded by htmlman1&#8212;which means yes, I'm owning up to its crappy design.<br />
+		This site also uses the <a href="http://www.jquery.com" style="color: white; font-weight: bold; font-size: 8.1pt;" target="_blank">jQuery library</a>.
+	</div>
+  </div>
+
+  <div id="gencontainer">
+	<span id="menu">
+		<form action="index.html" method="post" id="questform">
+			<center><h1>Quest Name: <br /> <input type="text" name="questname" size="25"></h1></center>
+			<h3>Additional Info</h3>
+			<fieldset>
+				<label for="quest_minlevel">Minimum Level:</label>
+				<input type="text" name="quest_minlevel" size="40" /><br />
+				<label for="quest_xp">XP Reward:</label>
+				<input type="text" name="quest_xp" size="4" /><br />
+				<hr />
+
+				<label for="quest_stages">Stages:</label>
+					<ol id="queststages">
+						<li>
+							<input type="text" class="quest_stage" size ="40" />
+							<a onclick="addElement('stage', this);" class="add">+</a>
+						</li>
+					</ol>
+				<label for="quest_success">Success Messages:</label>
+					<ul id="successmessages">
+						<li>
+							<input type="text" class="quest_success" size ="40" />
+							<a onclick="addElement('smessage', this);" class="add">+</a>
+						</li>
+					</ul>
+
+				<hr /><hr />
+
+				<label for="quest_npcs">NPCs:</label>
+					<div id="questnpcs">
+						<div id="buttons" style="text-align: left">
+							<a onclick="addElement('npc', this);" class="add">+</a>
+						</div>
+
+						<div id="npc_container" style="text-align: justify">
+							<div class="npc" title="Click to edit" onclick="openNPCInfoDialog(this)">
+								<span>Bob the Pony</span>
+								<div class="infodialog" title="NPC Info: Bob the Pony" style="display: none">
+									<b>General Information:</b><br />
+									Name: <input type="text" class="quest_npc_name" /><br />
+									Location:
+									<p class="dialog-list">
+										X: <input type="text" class="quest_npc_x" size="1"><br />
+										Y: <input type="text" class="quest_npc_y" size="1"><br />
+										Z: <input type="text" class="quest_npc_z" size="1"><br />
+									</p>
+									Occupation:
+									<p class="dialog-list">
+										<input type="radio" class="quest_npc_type" value="farmer" checked="checked"> Farmer&nbsp;
+										<input type="radio" class="quest_npc_type" value="blacksmith"> Blacksmith&nbsp;
+										<input type="radio" class="quest_npc_type" value="butcher"> Butcher&nbsp;
+										<input type="radio" class="quest_npc_type" value="librarian"> Librarian&nbsp;
+										<input type="radio" class="quest_npc_type" value="priest"> Priest&nbsp;
+									</p>
+									Is the villager a baby? <input type="checkbox" class="quest_npc_baby"><br />
+									<b>Stage Dialogue:</b>
+									<p class="dialog-list">
+										<ul class="npcdialog">
+											<li>
+												Stage <input class="quest_npc_stage spinner" size="3" />:&nbsp;&nbsp;
+												<input type="text" class="quest_npc_cont" size="40" />
+												<a onclick="addElement('npcdialogue', this)" class="add">+</a>
+											</li>
+										</ul>
+									</p>
+									<b>Other Messages</b>
+									<p class="dialog-list">
+									Low-stage message: <input type="text" class="quest_npc_lowstage" /><br />
+									Low-level message: <input type="text" class="quest_npc_lowlevel" /><br />
+									Repeat message: <input type="text" class="quest_npc_repeat" /><br />
+									Fallback message: <input type="text" class="quest_npc_fallback" /><br />
+									Greeting message: <input type="text" class="quest_npc_greeting" />
+									</p>
+									<b>Requirements</b> <input type="checkbox" class="quest_has_reqs" onclick="toggleReq(this)" />
+									<ul class="quest_reqs" style="display: none">
+										<li>
+											Stage <input class="quest_req_stage spinner" size="3" /><br />
+												X: <input type="text" class="quest_req_x" size="1" />
+												Y: <input type="text" class="quest_req_y" size="1" />
+												Z: <input type="text" class="quest_req_z" size="1" />
+											<a onclick="addElement('requirement', this)" class="add">+</a>
+										</li>
+									</ul>
+									<br />
+									<b>Rewards</b> <input type="checkbox" class="quest_has_rew" onclick="toggleRew(this)" />
+									<ul class="quest_rewards" style="display: none">
+										<li>
+											Stage <input class="quest_rew_stage spinner" size="3" /><br />
+												X: <input type="text" class="quest_rew_x" size="1" />
+												Y: <input type="text" class="quest_rew_y" size="1" />
+												Z: <input type="text" class="quest_rew_z" size="1" />
+											<a onclick="addElement('reward', this)" class="add">+</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				<hr /><hr />
+
+				<label for="regions">Regions: <input type="checkbox" name="quest_has_regions" onclick="toggleRegions()"></label>
+				<div id="region_container" style="display: none; text-align: justify">
+					<div id="reg_buttons" style="text-align: left">
+						<a onclick="addElement('region', this);" class="add">+</a>
+					</div>
+					<div class="region" title="Click to edit" onclick="openRegionInfoDialog(this)">
+						<span>Region1</span>
+						<div class="infodialog" title="Region Info: Region1" style="display: none">
+							<b>General Information</b><br />
+							Unique ID: <input type="text" class="region_name" /><br />
+							Corner 1:
+							<p class="dialog-list">
+								X: <input type="text" class="region_x1" size="3" /><br />
+								Y: <input type="text" class="region_y1" size="3" /><br />
+								Z: <input type="text" class="region_z1" size="3" /><br />
+							</p>
+							Corner 2:
+							<p class="dialog-list">
+								X: <input type="text" class="region_x2" size="3" /><br />
+								Y: <input type="text" class="region_y2" size="3" /><br />
+								Z: <input type="text" class="region_z2" size="3" /><br />
+							</p>
+							<input type="checkbox" class="region_escstage"> Escalates stage<br />
+							<hr />
+							<b>Entry Details</b><br />
+							Minimum stage: <input class="region_min_stage spinner" size="3" /><br />
+							Item required: <input type="checkbox" class="item_required" onclick="toggleItemReq(this)" />
+							<p class="region_item_req dialog-list" style="display: none">
+								X: <input type="text" class="region_item_x" size="3" /><br />
+								Y: <input type="text" class="region_item_y" size="3" /><br />
+								Z: <input type="text" class="region_item_z" size="3" /><br />
+							</p><br />
+							Teleport: <input type="checkbox" class="has_tp" onclick="toggleRegionTp(this)" />
+							<p class="region_tp dialog-list" style="display: none">
+								X: <input type="text" class="region_tp_x" size="3" /><br />
+								Y: <input type="text" class="region_tp_y" size="3" /><br />
+								Z: <input type="text" class="region_tp_z" size="3" /><br />
+							</p><br />
+							<hr />
+							<b>Messages</b><br />
+							Denial message: <input type="text" class="region_denial_message" size="43" /><br />
+							Stage set message: <input type="text" class="region_stage_message" size="43" />
+						</div>
+					</div>
+				</div>
+			</fieldset>
+			<hr />
+			<div style="text-align: center"><a onclick="validateForm(this)" class="submit">Generate</a></div>
+		</form>
+	</span>
+  </div>
+ </body>
+</html>
