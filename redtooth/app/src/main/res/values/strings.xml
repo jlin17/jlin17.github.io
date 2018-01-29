@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">Redtooth</string>
+    <string name="title_activity_call">CallActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="carl">CARL</string>
+    <string name="_1_800_345_3234">+ 1 800 420 1337</string>
+    <string name="end">END</string>
+    <string name="accept">Accept</string>
+    <string name="_00_00">00:00</string>
+    <string name="getCallButton">Get a Call</string>
+    <string name="GetTextButton">Get a Text</string>
+    <string name="sendCallButton">Send a Call</string>
+    <string name="sendTextButton">Send a Text</string>
+    <string name="homePageCaptionLabel">Choose what happens when you activate your redtooth</string>
+    <string name="getPhoneCallTitle">Choose your Redtooth call experience</string>
+    <string name="getPhoneCallCaption">What will happen during your calls from redtooth?</string>
+    <string name="mp3ButtonLabel">MP3</string>
+    <string name="chatBotButtonLabel">ChatBot</string>
+    <string name="backButtonLabel">Back</string>
+    <string name="homePageTitle">What can Redtooth do for you?</string>
+    <string name="chatBotTitle">Talk to CARL</string>
+    <string name="chatBotCaption">CARL is Redtooth\'s chatbot, trained and suited for talking you out of awkward situations</string>
+    <string name="confirmButton">Confirm</string>
+    <string-array name="mp3s">
+        <item>Wallace Loh\'s Commencement Speech</item>
+        <item> Carl\'s Best Hits</item>
+        <item> Georgetown\'s Fight Song</item>>
+    </string-array>
+    <string name="sendCallNumberInput">Enter a phone number to send a call to</string>
+    <string name="sendTextTitle">What text will you send?</string>
+    <string name="sendTextNumberInput">Enter a phone number to send a text to</string>
+    <string name="SendTextMessageInput">Enter a message to send to the number when Redtooth activates</string>
+    <string name="getTextTitle">What text will you get?</string>
+    <string name="getTextMessageInputCaption">Enter a message to recieve when Redtooth activates</string>
+    <string name="SendTextNumberInput">Enter a number to text when Redtooth activates</string>
+    <string name="getTextNameInputCaption">Enter a name for your text  to be from when Redtooth activates</string>
+    <string name="mp3SpinnerLabel">Select and mp3 to listen to in your phone call when Redtooth activates</string>
+    <string name="homePageCurrentSettingsLabel">Current Settings:</string>
+    <string name="mp3Title">What will you hear?</string>
+    <string name="sendPhoneCallTitle">Call through Redtooth</string>
+    <string name="talk_to_carl">Talk to Carl</string>
+</resources>

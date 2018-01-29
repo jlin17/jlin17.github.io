@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="lin.jonathan.redtooth.LandingActivity">
+
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/homePageTitle"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+    <TextView
+        android:id="@+id/homePageCaption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:text="@string/homePageCaptionLabel"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+    <Button
+        android:id="@+id/getCallButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:onClick="getCallButtonClicked"
+        android:text="@string/getCallButton" />
+
+    <Button
+        android:id="@+id/SendCallButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:onClick="sendCallButtonClicked"
+        android:text="@string/sendCallButton" />
+
+    <Button
+        android:id="@+id/sendTextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:onClick="sendTextButtonClicked"
+        android:text="@string/sendTextButton" />
+    <Button
+        android:id="@+id/getTextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:onClick="getTextButtonClicked"
+        android:text="@string/GetTextButton" />
+
+    <Button
+        android:id="@+id/talkCarl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#fc4e4e"
+        android:onClick="talkCarl"
+        android:text="@string/talk_to_carl"
+        android:fontFamily="cursive"
+        android:textSize="18sp"
+        android:textStyle="normal|bold" />
+
+    <TextView
+        android:id="@+id/settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
+        android:text="@string/homePageCurrentSettingsLabel"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+</LinearLayout>

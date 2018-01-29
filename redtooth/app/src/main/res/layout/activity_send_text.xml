@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/sendTextTitle"
+        android:layout_width="368dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/sendTextTitle"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+    <TextView
+        android:id="@+id/sendTextNumberInputCaption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:text="@string/SendTextNumberInput"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+    <EditText
+        android:id="@+id/sendTextNumberInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="0dp" />
+    <TextView
+        android:id="@+id/sendTextMessageInputCaption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:text="@string/SendTextMessageInput"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+    <EditText
+        android:id="@+id/sendTextMessageInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <Button
+        android:id="@+id/sendTextConfirmButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#fc4e4e"
+        android:text="@string/confirmButton"
+        android:onClick="confirmButtonClicked" />
+
+    <Button
+        android:id="@+id/sendTextBackButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="@string/backButtonLabel"
+        android:onClick="backButtonClicked" />
+</LinearLayout>
