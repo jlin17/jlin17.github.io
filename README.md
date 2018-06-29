@@ -7,7 +7,6 @@ But here are some links here and there to some things that make some sense:
 - [centerpiece](/centerpiece/)
 - [physics](/physics/)
 - [psych](/psych/)
-- [redtooth](/redtooth/)
 - [sanctuary](/sanctuary/)
 - [wynn](/wynn/)
 
